@@ -107,11 +107,34 @@
           </div>
         </div>
 
-        <!-- Attendance History -->
+        <!-- Attendance Stats & History -->
         <div class="card">
-          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px;">
-            ⏱️ Lịch sử chấm công gần nhất
-          </h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="font-size: 16px; font-weight: 700;">⏱️ Thống kê & Lịch sử chấm công</h3>
+            <span id="stats-month-label" style="font-size: 12px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: var(--radius-sm);">
+              Thống kê tháng hiện tại
+            </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 20px;">
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
+              <div style="font-size: 12px; color: #166534; font-weight: 600;">Đúng giờ</div>
+              <div id="stat-present-val" style="font-size: 22px; font-weight: 800; color: #15803d; margin-top: 4px;">0</div>
+            </div>
+            <div style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
+              <div style="font-size: 12px; color: #92400e; font-weight: 600;">Đi muộn</div>
+              <div id="stat-late-val" style="font-size: 22px; font-weight: 800; color: #b45309; margin-top: 4px;">0</div>
+            </div>
+            <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
+              <div style="font-size: 12px; color: #9a3412; font-weight: 600;">Về sớm</div>
+              <div id="stat-early-val" style="font-size: 22px; font-weight: 800; color: #c2410c; margin-top: 4px;">0</div>
+            </div>
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
+              <div style="font-size: 12px; color: #1e40af; font-weight: 600;">Tổng ngày làm</div>
+              <div id="stat-total-val" style="font-size: 22px; font-weight: 800; color: #1d4ed8; margin-top: 4px;">0</div>
+            </div>
+          </div>
+
           <div class="table-responsive">
             <table class="data-table">
               <thead>
@@ -206,6 +229,21 @@
                 </tr>
               `;
             }).join('');
+          }
+
+          // Fetch and display individual attendance statistics
+          try {
+            const statsRes = await api.get(`/attendance/stats/${emp.id}`);
+            if (statsRes.success && statsRes.data) {
+              const s = statsRes.data;
+              document.getElementById('stat-present-val').textContent = s.present_days || 0;
+              document.getElementById('stat-late-val').textContent = s.late_days || 0;
+              document.getElementById('stat-early-val').textContent = s.early_leave_days || 0;
+              document.getElementById('stat-total-val').textContent = s.total_days || 0;
+              document.getElementById('stats-month-label').textContent = `Tháng ${s.month}/${s.year}`;
+            }
+          } catch (e) {
+            console.warn('Could not load attendance stats', e);
           }
 
           // Delete action

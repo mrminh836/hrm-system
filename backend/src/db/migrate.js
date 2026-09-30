@@ -160,6 +160,35 @@ async function migrateAndSeed() {
       console.log(`[Seed] Đã tạo ${sampleEmployees.length} nhân viên mẫu.`);
     }
 
+    // 4. Seed Sample Attendances if empty or minimal
+    const attCount = await query('SELECT COUNT(*) AS total FROM attendances');
+    if (attCount.rows[0].total < 5) {
+      const allEmps = await query('SELECT id FROM employees LIMIT 5');
+      const today = new Date();
+      
+      for (const emp of allEmps.rows) {
+        // Generate records for the past 5 work days
+        for (let i = 1; i <= 5; i++) {
+          const pastDate = new Date(today);
+          pastDate.setDate(today.getDate() - i);
+          const dateStr = pastDate.toISOString().split('T')[0];
+          
+          const isLate = (i % 3 === 0);
+          const checkInTime = isLate ? '08:45:00' : '08:15:00';
+          const checkOutTime = '17:35:00';
+          const status = isLate ? 'late' : 'present';
+
+          await query(
+            `INSERT INTO attendances (employee_id, date, check_in, check_out, status, note)
+             VALUES (?, ?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE status = status`,
+            [emp.id, dateStr, checkInTime, checkOutTime, status, isLate ? 'Đi muộn 15p' : 'Đúng giờ']
+          );
+        }
+      }
+      console.log('[Seed] Đã tạo dữ liệu chấm công mẫu cho các nhân viên.');
+    }
+
     console.log('[Migration] Khởi tạo cơ sở dữ liệu MySQL hoàn tất.');
   } catch (error) {
     console.error('[Migration] Lỗi khi migration:', error.message);

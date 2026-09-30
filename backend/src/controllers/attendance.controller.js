@@ -288,10 +288,61 @@ const getSummary = async (req, res) => {
   }
 };
 
+// GET /api/attendance/stats/:employeeId
+const getEmployeeStats = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    const month = parseInt(req.query.month, 10) || currentMonth;
+    const year = parseInt(req.query.year, 10) || currentYear;
+
+    const sql = `
+      SELECT 
+        COUNT(CASE WHEN status = 'present' THEN 1 END) AS present_days,
+        COUNT(CASE WHEN status = 'late' THEN 1 END) AS late_days,
+        COUNT(CASE WHEN status = 'early_leave' THEN 1 END) AS early_leave_days,
+        COUNT(CASE WHEN status = 'absent' THEN 1 END) AS absent_days,
+        COUNT(id) AS total_days
+      FROM attendances
+      WHERE employee_id = ?
+        AND MONTH(date) = ?
+        AND YEAR(date) = ?
+    `;
+
+    const result = await query(sql, [employeeId, month, year]);
+    const stats = result.rows[0] || {
+      present_days: 0,
+      late_days: 0,
+      early_leave_days: 0,
+      absent_days: 0,
+      total_days: 0,
+    };
+
+    return res.json({
+      success: true,
+      data: {
+        employee_id: parseInt(employeeId, 10),
+        month,
+        year,
+        ...stats,
+      },
+    });
+  } catch (error) {
+    console.error('[Employee Attendance Stats Error]:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Không thể lấy thống kê chấm công nhân viên.',
+    });
+  }
+};
+
 module.exports = {
   checkIn,
   checkOut,
   getTodayStatus,
   getHistory,
   getSummary,
+  getEmployeeStats,
 };
+

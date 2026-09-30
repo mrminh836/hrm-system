@@ -72,6 +72,23 @@ services:
       - hrm-backend-net
       - hrm-frontend-net
 
+  # 4. Nginx Reverse Proxy with HTTPS & Security Headers (Sprint 2 US 16.0)
+  hrm-nginx:
+    image: nginx:alpine
+    container_name: hrm-nginx
+    restart: unless-stopped
+    depends_on:
+      - hrm-app
+      - hrm-phpmyadmin
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    networks:
+      - hrm-frontend-net
+
 volumes:
   mysql_data:
     driver: local
