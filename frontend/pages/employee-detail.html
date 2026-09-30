@@ -298,17 +298,17 @@
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/components.js"></script>
   <script>
-    if (requireAuth()) {
-      renderSidebar('employees', 'Chi tiết hồ sơ nhân sự');
-      loadProfile();
-    }
-
     const params = new URLSearchParams(window.location.search);
     const empId = params.get('id');
 
     if (!empId) {
       alert('Không tìm thấy mã nhân viên.');
       window.location.href = '/pages/employees.html';
+    }
+
+    if (requireAuth()) {
+      renderSidebar('employees', 'Chi tiết hồ sơ nhân sự');
+      loadProfile();
     }
 
     async function loadProfile() {

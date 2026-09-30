@@ -466,8 +466,8 @@
           api.get('/attendance/today').catch(() => ({ data: null }))
         ]);
 
-        const employees = empRes.data || [];
-        const departments = depRes.data || [];
+        const employees = Array.isArray(empRes.data) ? empRes.data : (empRes.data?.items || []);
+        const departments = Array.isArray(depRes.data) ? depRes.data : (depRes.data?.items || []);
 
         // 1. Update KPI numbers
         document.getElementById('kpi-total-employees').textContent = employees.length;
