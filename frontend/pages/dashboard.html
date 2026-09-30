@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng điều khiển - HRM System</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-title">
+          <h2>Tổng quan hệ thống</h2>
+        </div>
+        <div class="header-actions">
+          <span id="current-time-badge" style="font-size: 13px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; padding: 6px 12px; border-radius: var(--radius-full);">
+            --:--:--
+          </span>
+          <a href="/pages/employees.html" class="btn btn-primary btn-sm">+ Thêm nhân viên</a>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- Interactive Attendance Banner -->
+        <div class="card" style="margin-bottom: 28px; background: linear-gradient(135deg, #312e81, #1e1b4b); color: #fff; border: none; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+          <div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">Chấm công nhanh hôm nay</h3>
+            <p id="att-status-text" style="font-size: 13px; color: #cbd5e1;">Đang tải trạng thái chấm công của bạn...</p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button id="btn-quick-checkin" class="btn btn-success" style="box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">
+              ⏱️ Check-in
+            </button>
+            <button id="btn-quick-checkout" class="btn btn-danger" style="box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">
+              🚪 Check-out
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">👥</div>
+            <div class="stat-content">
+              <div class="stat-label">Tổng nhân viên</div>
+              <div class="stat-value" id="stat-total-emp">-</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div class="stat-content">
+              <div class="stat-label">Đang hoạt động</div>
+              <div class="stat-value" id="stat-active-emp">-</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon purple">🏢</div>
+            <div class="stat-content">
+              <div class="stat-label">Tổng phòng ban</div>
+              <div class="stat-value" id="stat-total-deps">-</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon amber">⏱️</div>
+            <div class="stat-content">
+              <div class="stat-label">Chấm công hôm nay</div>
+              <div class="stat-value" id="stat-today-att">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid: Departments & Recent Employees -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px;">
+          <!-- Department Distribution -->
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+              <h3 style="font-size: 16px; font-weight: 700;">Nhân sự theo phòng ban</h3>
+              <a href="/pages/departments.html" style="font-size: 13px; color: var(--primary); font-weight: 600; text-decoration: none;">Xem tất cả →</a>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Phòng ban</th>
+                    <th style="text-align: right;">Số nhân viên</th>
+                  </tr>
+                </thead>
+                <tbody id="department-list-body">
+                  <tr><td colspan="2" style="text-align: center; color: var(--text-light);">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recently Added Employees -->
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+              <h3 style="font-size: 16px; font-weight: 700;">Nhân viên mới cập nhật</h3>
+              <a href="/pages/employees.html" style="font-size: 13px; color: var(--primary); font-weight: 600; text-decoration: none;">Quản lý nhân viên →</a>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Mã NV</th>
+                    <th>Họ & tên</th>
+                    <th>Vị trí</th>
+                    <th>Phòng ban</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-emp-body">
+                  <tr><td colspan="4" style="text-align: center; color: var(--text-light);">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    if (requireAuth()) {
+      renderSidebar('dashboard');
+      initDashboard();
+    }
+
+    // Live clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('current-time-badge').textContent = now.toLocaleTimeString('vi-VN') + ' - ' + now.toLocaleDateString('vi-VN');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    async function initDashboard() {
+      await Promise.all([loadStats(), loadTodayAttendance()]);
+    }
+
+    async function loadStats() {
+      try {
+        const res = await api.get('/stats');
+        if (res.success) {
+          const { totalEmployees, activeEmployees, totalDepartments, todayAttendance, departmentDistribution, recentEmployees } = res.data;
+          
+          document.getElementById('stat-total-emp').textContent = totalEmployees;
+          document.getElementById('stat-active-emp').textContent = activeEmployees;
+          document.getElementById('stat-total-deps').textContent = totalDepartments;
+          document.getElementById('stat-today-att').textContent = `${todayAttendance.total_checked} / ${totalEmployees}`;
+
+          // Render departments
+          const depBody = document.getElementById('department-list-body');
+          if (departmentDistribution.length === 0) {
+            depBody.innerHTML = '<tr><td colspan="2" style="text-align: center;">Chưa có dữ liệu</td></tr>';
+          } else {
+            depBody.innerHTML = departmentDistribution.map(d => `
+              <tr>
+                <td style="font-weight: 600;">${d.name}</td>
+                <td style="text-align: right;"><span class="badge badge-info">${d.employee_count} thành viên</span></td>
+              </tr>
+            `).join('');
+          }
+
+          // Render recent employees
+          const empBody = document.getElementById('recent-emp-body');
+          if (recentEmployees.length === 0) {
+            empBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Chưa có nhân viên nào</td></tr>';
+          } else {
+            empBody.innerHTML = recentEmployees.map(e => `
+              <tr>
+                <td><span class="badge badge-neutral">${e.employee_code}</span></td>
+                <td><a href="/pages/employee-detail.html?id=${e.id}" style="color: var(--primary); font-weight: 600; text-decoration: none;">${e.full_name}</a></td>
+                <td>${e.position || '-'}</td>
+                <td>${e.department_name || '<em style="color:#94a3b8">Chưa gán</em>'}</td>
+              </tr>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        console.error('Error loading stats:', err);
+      }
+    }
+
+    async function loadTodayAttendance() {
+      try {
+        const res = await api.get('/attendance/today');
+        const statusText = document.getElementById('att-status-text');
+        const checkinBtn = document.getElementById('btn-quick-checkin');
+        const checkoutBtn = document.getElementById('btn-quick-checkout');
+
+        if (res.data) {
+          const item = res.data;
+          let msg = `Hôm nay bạn đã Check-in lúc: <strong>${item.check_in || 'Chưa'}</strong>`;
+          if (item.check_out) {
+            msg += ` | Check-out lúc: <strong>${item.check_out}</strong>`;
+            checkinBtn.disabled = true;
+            checkoutBtn.disabled = true;
+          } else if (item.check_in) {
+            checkinBtn.disabled = true;
+            checkoutBtn.disabled = false;
+          }
+          statusText.innerHTML = msg;
+        } else {
+          statusText.textContent = 'Bạn chưa thực hiện điểm danh hôm nay.';
+          checkoutBtn.disabled = true;
+        }
+      } catch (err) {
+        console.error('Error loading today attendance:', err);
+      }
+    }
+
+    document.getElementById('btn-quick-checkin').addEventListener('click', async () => {
+      try {
+        const res = await api.post('/attendance/check-in', {});
+        showToast(res.message, 'success');
+        initDashboard();
+      } catch (e) {}
+    });
+
+    document.getElementById('btn-quick-checkout').addEventListener('click', async () => {
+      try {
+        const res = await api.post('/attendance/check-out', {});
+        showToast(res.message, 'success');
+        initDashboard();
+      } catch (e) {}
+    });
+  </script>
+</body>
+</html>

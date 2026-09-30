@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ nhân viên - HRM System</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-title">
+          <h2>Chi tiết hồ sơ nhân viên</h2>
+        </div>
+        <div class="header-actions">
+          <a href="/pages/employees.html" class="btn btn-secondary btn-sm">← Quay lại danh sách</a>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- Profile Card Header -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
+            <div style="display: flex; align-items: center; gap: 20px;">
+              <div id="emp-avatar" style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 800; box-shadow: 0 8px 16px var(--primary-glow);">
+                --
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <h1 id="emp-name" style="font-size: 22px; font-weight: 800;">-</h1>
+                  <span id="emp-code-badge" class="badge badge-neutral">-</span>
+                  <span id="emp-status-badge" class="badge badge-success">-</span>
+                </div>
+                <div style="margin-top: 4px; color: var(--text-muted); font-size: 14px;">
+                  <span id="emp-position">-</span> • <strong id="emp-department" style="color: var(--text-main);">-</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-danger btn-sm" id="btn-delete-profile">Xóa hồ sơ</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 24px;">
+          <!-- Personal Info -->
+          <div class="card">
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+              📋 Thông tin cá nhân & Liên hệ
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Email công việc:</span>
+                <strong id="emp-email">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Số điện thoại:</span>
+                <strong id="emp-phone">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Ngày sinh:</span>
+                <strong id="emp-dob">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Giới tính:</span>
+                <strong id="emp-gender">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Địa chỉ:</span>
+                <strong id="emp-address" style="text-align: right; max-width: 60%;">-</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employment Info -->
+          <div class="card">
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+              💼 Thông tin công việc & Đãi ngộ
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Phòng ban:</span>
+                <strong id="emp-department-full">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Chức vụ:</span>
+                <strong id="emp-position-full">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Ngày vào công ty:</span>
+                <strong id="emp-hire-date">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Mức lương cơ bản:</span>
+                <strong id="emp-salary" style="color: #059669; font-size: 16px;">-</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Ngày tạo hồ sơ:</span>
+                <strong id="emp-created-at">-</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance History -->
+        <div class="card">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px;">
+            ⏱️ Lịch sử chấm công gần nhất
+          </h3>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Giờ Check-in</th>
+                  <th>Giờ Check-out</th>
+                  <th>Trạng thái</th>
+                  <th>Ghi chú</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-tbody">
+                <tr><td colspan="5" style="text-align: center;">Chưa có dữ liệu chấm công.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    if (requireAuth()) {
+      renderSidebar('employees');
+      loadEmployeeProfile();
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const empId = params.get('id');
+
+    if (!empId) {
+      alert('Không tìm thấy mã nhân viên.');
+      window.location.href = '/pages/employees.html';
+    }
+
+    async function loadEmployeeProfile() {
+      try {
+        const res = await api.get(`/employees/${empId}`);
+        if (res.success) {
+          const emp = res.data;
+
+          const initials = emp.full_name.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase();
+          document.getElementById('emp-avatar').textContent = initials;
+          document.getElementById('emp-name').textContent = emp.full_name;
+          document.getElementById('emp-code-badge').textContent = emp.employee_code;
+          
+          let statusLabel = 'Đang làm việc';
+          let statusClass = 'badge-success';
+          if (emp.status === 'probation') { statusLabel = 'Thử việc'; statusClass = 'badge-warning'; }
+          if (emp.status === 'inactive') { statusLabel = 'Tạm nghỉ'; statusClass = 'badge-neutral'; }
+          if (emp.status === 'resigned') { statusLabel = 'Đã nghỉ việc'; statusClass = 'badge-danger'; }
+
+          const statusBadge = document.getElementById('emp-status-badge');
+          statusBadge.textContent = statusLabel;
+          statusBadge.className = `badge ${statusClass}`;
+
+          document.getElementById('emp-position').textContent = emp.position || 'Nhân viên';
+          document.getElementById('emp-department').textContent = emp.department_name || 'Chưa gán phòng ban';
+
+          document.getElementById('emp-email').textContent = emp.email;
+          document.getElementById('emp-phone').textContent = emp.phone;
+          document.getElementById('emp-dob').textContent = formatDate(emp.date_of_birth);
+          document.getElementById('emp-gender').textContent = emp.gender || 'Nam';
+          document.getElementById('emp-address').textContent = emp.address || 'Chưa cập nhật';
+
+          document.getElementById('emp-department-full').textContent = emp.department_name ? `${emp.department_name} (${emp.department_code})` : 'Chưa gán';
+          document.getElementById('emp-position-full').textContent = emp.position || '-';
+          document.getElementById('emp-hire-date').textContent = formatDate(emp.hire_date);
+          document.getElementById('emp-salary').textContent = formatCurrency(emp.salary);
+          document.getElementById('emp-created-at').textContent = formatDate(emp.created_at);
+
+          // Render attendances
+          const attTbody = document.getElementById('attendance-tbody');
+          if (!emp.recentAttendances || emp.recentAttendances.length === 0) {
+            attTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">Nhân viên này chưa có bản ghi chấm công nào.</td></tr>';
+          } else {
+            attTbody.innerHTML = emp.recentAttendances.map(a => {
+              let badge = '<span class="badge badge-success">Đúng giờ</span>';
+              if (a.status === 'late') badge = '<span class="badge badge-warning">Đi muộn</span>';
+              if (a.status === 'early_leave') badge = '<span class="badge badge-warning">Về sớm</span>';
+              if (a.status === 'absent') badge = '<span class="badge badge-danger">Vắng mặt</span>';
+
+              return `
+                <tr>
+                  <td><strong>${formatDate(a.date)}</strong></td>
+                  <td>${a.check_in || '-'}</td>
+                  <td>${a.check_out || '-'}</td>
+                  <td>${badge}</td>
+                  <td>${a.note || '-'}</td>
+                </tr>
+              `;
+            }).join('');
+          }
+
+          // Delete action
+          document.getElementById('btn-delete-profile').addEventListener('click', async () => {
+            if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${emp.full_name}" không?`)) {
+              try {
+                const dRes = await api.delete(`/employees/${emp.id}`);
+                showToast(dRes.message, 'success');
+                setTimeout(() => {
+                  window.location.href = '/pages/employees.html';
+                }, 800);
+              } catch (e) {}
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load profile', err);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "hrm-system",
+  "version": "1.0.0",
+  "description": "Hệ thống Quản lý Nhân sự (HRM System) - Node.js, Express, PostgreSQL, Vanilla Frontend, Docker",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "dev": "nodemon backend/src/server.js",
+    "db:migrate": "node backend/src/db/migrate.js"
+  },
+  "keywords": [
+    "hrm",
+    "human-resource-management",
+    "express",
+    "postgresql",
+    "docker"
+  ],
+  "author": "Đỗ Quang Minh",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.24.5",
+    "prom-client": "^15.1.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

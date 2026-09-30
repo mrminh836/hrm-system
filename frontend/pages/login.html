@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - Hệ thống Quản lý Nhân sự (HRM)</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    body {
+      background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      padding: 40px 36px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .login-header .logo-badge {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 28px;
+      box-shadow: 0 8px 16px var(--primary-glow);
+    }
+    .login-header h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+    .login-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .quick-fill-box {
+      margin-top: 20px;
+      padding: 12px;
+      background: #f1f5f9;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      border: 1px dashed #cbd5e1;
+      text-align: center;
+    }
+    .btn-quick {
+      margin-top: 6px;
+      background: #e2e8f0;
+      border: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--primary);
+      transition: var(--transition-fast);
+    }
+    .btn-quick:hover {
+      background: var(--primary-light);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo-badge">⚡</div>
+      <h2>HRM SYSTEM</h2>
+      <p>Hệ thống Quản lý Nhân sự & Chấm công</p>
+    </div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="email">Tài khoản Email</label>
+        <input type="email" id="email" class="form-control" placeholder="name@company.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Mật khẩu</label>
+        <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btn-submit" style="width: 100%; margin-top: 10px; padding: 12px;">
+        Đăng nhập hệ thống
+      </button>
+    </form>
+
+    <div class="quick-fill-box">
+      <div>💡 <strong>Tài khoản Admin thử nghiệm:</strong></div>
+      <div style="color: var(--text-muted); margin-top: 2px;"><code>admin@hrm.local</code> | <code>Admin@123</code></div>
+      <button type="button" class="btn-quick" id="btn-fill-admin">⚡ Điền nhanh tài khoản Admin</button>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script>
+    // Autofill demo button
+    document.getElementById('btn-fill-admin').addEventListener('click', () => {
+      document.getElementById('email').value = 'admin@hrm.local';
+      document.getElementById('password').value = 'Admin@123';
+    });
+
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const submitBtn = document.getElementById('btn-submit');
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang xác thực...';
+
+        const res = await api.post('/auth/login', { email, password });
+        if (res.success) {
+          setAuth(res.data.token, res.data.user);
+          showToast('Đăng nhập thành công! Đang chuyển hướng...', 'success');
+          setTimeout(() => {
+            window.location.href = '/pages/dashboard.html';
+          }, 600);
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Đăng nhập hệ thống';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+services:
+  # 1. MySQL Database Service
+  hrm-mysql:
+    image: mysql:8.0
+    container_name: hrm-mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-hrm_root_secure_2026}
+      MYSQL_DATABASE: ${DB_NAME:-hrm_db}
+      MYSQL_USER: ${DB_USER:-hrm_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-hrm_secure_password_2026}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hrm-backend-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-hrm_root_secure_2026}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # 2. phpMyAdmin Database Management
+  hrm-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: hrm-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      hrm-mysql:
+        condition: service_healthy
+    environment:
+      PMA_HOST: hrm-mysql
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USER:-hrm_user}
+      PMA_PASSWORD: ${DB_PASSWORD:-hrm_secure_password_2026}
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "8080:80"
+    networks:
+      - hrm-backend-net
+      - hrm-frontend-net
+
+  # 3. HRM Web Application (Node.js/Express + Static Frontend)
+  hrm-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hrm-app
+    restart: unless-stopped
+    depends_on:
+      hrm-mysql:
+        condition: service_healthy
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      DB_HOST: hrm-mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-hrm_user}
+      DB_PASSWORD: ${DB_PASSWORD:-hrm_secure_password_2026}
+      DB_NAME: ${DB_NAME:-hrm_db}
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_hrm_2026_qminh}
+      JWT_EXPIRES_IN: 7d
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@hrm.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123}
+      ADMIN_NAME: ${ADMIN_NAME:-Đỗ Quang Minh (Admin)}
+    ports:
+      - "5000:5000"
+    networks:
+      - hrm-backend-net
+      - hrm-frontend-net
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  hrm-frontend-net:
+    driver: bridge
+  hrm-backend-net:
+    driver: bridge

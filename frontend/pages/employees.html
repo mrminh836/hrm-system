@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý nhân viên - HRM System</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-title">
+          <h2>Danh sách nhân viên</h2>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary btn-sm" id="btn-open-create-modal">+ Thêm nhân viên mới</button>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- Filter & Search Bar -->
+        <div class="filter-bar card" style="padding: 16px 20px; flex-direction: row;">
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; flex: 1;">
+            <div class="search-input-group">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-input" class="form-control" placeholder="Tìm theo tên, email, mã NV, SĐT...">
+            </div>
+
+            <div style="min-width: 200px;">
+              <select id="department-filter" class="form-control">
+                <option value="">-- Tất cả phòng ban --</option>
+              </select>
+            </div>
+
+            <div style="min-width: 160px;">
+              <select id="status-filter" class="form-control">
+                <option value="">-- Tất cả trạng thái --</option>
+                <option value="active">Đang làm việc</option>
+                <option value="probation">Thử việc</option>
+                <option value="inactive">Tạm nghỉ</option>
+                <option value="resigned">Đã nghỉ việc</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button id="btn-search" class="btn btn-primary btn-sm">Tìm kiếm</button>
+            <button id="btn-reset" class="btn btn-secondary btn-sm">Đặt lại</button>
+          </div>
+        </div>
+
+        <!-- Employees Table -->
+        <div class="table-responsive" style="margin-top: 20px;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã NV</th>
+                <th>Họ và tên</th>
+                <th>Liên hệ</th>
+                <th>Phòng ban</th>
+                <th>Vị trí</th>
+                <th>Lương cơ bản</th>
+                <th>Trạng thái</th>
+                <th style="text-align: right;">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="employees-tbody">
+              <tr><td colspan="8" style="text-align: center; padding: 30px;">Đang tải danh sách nhân viên...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 0 4px;">
+          <div style="font-size: 13px; color: var(--text-muted);" id="pagination-info">
+            Hiển thị 0 / 0 nhân viên
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" id="btn-prev-page" disabled>‹ Trang trước</button>
+            <span id="page-indicator" style="display: flex; align-items: center; padding: 0 10px; font-size: 13px; font-weight: 600;">Trang 1 / 1</span>
+            <button class="btn btn-secondary btn-sm" id="btn-next-page" disabled>Trang sau ›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Employee Modal -->
+  <div class="modal-backdrop" id="employee-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modal-title">Thêm nhân viên mới</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <form id="employee-form">
+        <div class="modal-body">
+          <input type="hidden" id="emp-id">
+
+          <div class="form-group">
+            <label class="form-label" for="emp-name">Họ và tên <span style="color:red">*</span></label>
+            <input type="text" id="emp-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group">
+              <label class="form-label" for="emp-email">Email <span style="color:red">*</span></label>
+              <input type="email" id="emp-email" class="form-control" placeholder="nguyenvana@hrm.local" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="emp-phone">Số điện thoại <span style="color:red">*</span></label>
+              <input type="tel" id="emp-phone" class="form-control" placeholder="0988123456" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group">
+              <label class="form-label" for="emp-dob">Ngày sinh</label>
+              <input type="date" id="emp-dob" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="emp-gender">Giới tính</label>
+              <select id="emp-gender" class="form-control">
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group">
+              <label class="form-label" for="emp-department">Phòng ban</label>
+              <select id="emp-department" class="form-control">
+                <option value="">-- Chưa gán phòng ban --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="emp-position">Vị trí / Chức vụ</label>
+              <input type="text" id="emp-position" class="form-control" placeholder="Nhân viên kinh doanh">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group">
+              <label class="form-label" for="emp-salary">Mức lương (VNĐ)</label>
+              <input type="number" id="emp-salary" class="form-control" placeholder="10000000" min="0" step="500000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="emp-status">Trạng thái</label>
+              <select id="emp-status" class="form-control">
+                <option value="active">Đang làm việc</option>
+                <option value="probation">Thử việc</option>
+                <option value="inactive">Tạm nghỉ</option>
+                <option value="resigned">Đã nghỉ việc</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="emp-address">Địa chỉ thường trú</label>
+            <textarea id="emp-address" class="form-control" rows="2" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành phố"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Hủy bỏ</button>
+          <button type="submit" class="btn btn-primary" id="modal-save-btn">Lưu thông tin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    if (requireAuth()) {
+      renderSidebar('employees');
+      initEmployeePage();
+    }
+
+    let currentPage = 1;
+    const limit = 10;
+    let departmentsList = [];
+
+    async function initEmployeePage() {
+      await loadDepartments();
+      await loadEmployees();
+    }
+
+    async function loadDepartments() {
+      try {
+        const res = await api.get('/departments');
+        if (res.success) {
+          departmentsList = res.data;
+          const filterSelect = document.getElementById('department-filter');
+          const formSelect = document.getElementById('emp-department');
+
+          departmentsList.forEach(d => {
+            filterSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            formSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load departments', err);
+      }
+    }
+
+    async function loadEmployees() {
+      const search = document.getElementById('search-input').value;
+      const department_id = document.getElementById('department-filter').value;
+      const status = document.getElementById('status-filter').value;
+
+      try {
+        const queryParams = new URLSearchParams({
+          page: currentPage,
+          limit,
+          search,
+          department_id,
+          status,
+        });
+
+        const res = await api.get(`/employees?${queryParams.toString()}`);
+        if (res.success) {
+          renderEmployeeTable(res.data);
+        }
+      } catch (err) {
+        console.error('Failed to load employees', err);
+      }
+    }
+
+    function renderEmployeeTable(data) {
+      const tbody = document.getElementById('employees-tbody');
+      const { items, total, page, totalPages } = data;
+
+      document.getElementById('pagination-info').textContent = `Hiển thị ${items.length} trên tổng số ${total} nhân viên`;
+      document.getElementById('page-indicator').textContent = `Trang ${page} / ${totalPages}`;
+      document.getElementById('btn-prev-page').disabled = (page <= 1);
+      document.getElementById('btn-next-page').disabled = (page >= totalPages);
+
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">Không tìm thấy nhân viên nào phù hợp.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = items.map(emp => {
+        let statusBadge = '<span class="badge badge-success">Đang làm việc</span>';
+        if (emp.status === 'probation') statusBadge = '<span class="badge badge-warning">Thử việc</span>';
+        if (emp.status === 'inactive') statusBadge = '<span class="badge badge-neutral">Tạm nghỉ</span>';
+        if (emp.status === 'resigned') statusBadge = '<span class="badge badge-danger">Đã nghỉ việc</span>';
+
+        return `
+          <tr>
+            <td><span class="badge badge-neutral">${emp.employee_code}</span></td>
+            <td>
+              <a href="/pages/employee-detail.html?id=${emp.id}" style="color: var(--primary); font-weight: 700; text-decoration: none;">
+                ${emp.full_name}
+              </a>
+              <div style="font-size: 11px; color: var(--text-muted);">${emp.gender || 'Nam'} • ${formatDate(emp.date_of_birth)}</div>
+            </td>
+            <td>
+              <div>✉️ ${emp.email}</div>
+              <div style="font-size: 12px; color: var(--text-muted);">📞 ${emp.phone}</div>
+            </td>
+            <td><strong>${emp.department_name || '<em style="color:#94a3b8">Chưa gán</em>'}</strong></td>
+            <td>${emp.position || '-'}</td>
+            <td><strong style="color: #059669;">${formatCurrency(emp.salary)}</strong></td>
+            <td>${statusBadge}</td>
+            <td style="text-align: right; white-space: nowrap;">
+              <a href="/pages/employee-detail.html?id=${emp.id}" class="btn btn-secondary btn-sm" title="Xem chi tiết">👁️</a>
+              <button class="btn btn-secondary btn-sm btn-edit" data-id="${emp.id}" title="Sửa thông tin">✏️</button>
+              <button class="btn btn-danger btn-sm btn-delete" data-id="${emp.id}" data-name="${emp.full_name}" title="Xóa nhân viên">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Attach edit handlers
+      document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+      });
+
+      // Attach delete handlers
+      document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', () => handleDelete(btn.dataset.id, btn.dataset.name));
+      });
+    }
+
+    // Modal controls
+    const modalBackdrop = document.getElementById('employee-modal');
+    const modalForm = document.getElementById('employee-form');
+
+    function openModal() {
+      modalBackdrop.classList.add('show');
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove('show');
+      modalForm.reset();
+      document.getElementById('emp-id').value = '';
+    }
+
+    document.getElementById('btn-open-create-modal').addEventListener('click', () => {
+      document.getElementById('modal-title').textContent = 'Thêm nhân viên mới';
+      document.getElementById('emp-id').value = '';
+      modalForm.reset();
+      openModal();
+    });
+
+    document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+    document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+
+    async function openEditModal(id) {
+      try {
+        const res = await api.get(`/employees/${id}`);
+        if (res.success) {
+          const emp = res.data;
+          document.getElementById('modal-title').textContent = `Chỉnh sửa nhân viên: ${emp.full_name}`;
+          document.getElementById('emp-id').value = emp.id;
+          document.getElementById('emp-name').value = emp.full_name;
+          document.getElementById('emp-email').value = emp.email;
+          document.getElementById('emp-phone').value = emp.phone;
+          document.getElementById('emp-dob').value = emp.date_of_birth ? emp.date_of_birth.split('T')[0] : '';
+          document.getElementById('emp-gender').value = emp.gender || 'Nam';
+          document.getElementById('emp-department').value = emp.department_id || '';
+          document.getElementById('emp-position').value = emp.position || '';
+          document.getElementById('emp-salary').value = emp.salary || '';
+          document.getElementById('emp-status').value = emp.status || 'active';
+          document.getElementById('emp-address').value = emp.address || '';
+          openModal();
+        }
+      } catch (err) {}
+    }
+
+    // Save (Create / Update)
+    modalForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('emp-id').value;
+      const payload = {
+        full_name: document.getElementById('emp-name').value.trim(),
+        email: document.getElementById('emp-email').value.trim(),
+        phone: document.getElementById('emp-phone').value.trim(),
+        date_of_birth: document.getElementById('emp-dob').value || null,
+        gender: document.getElementById('emp-gender').value,
+        department_id: document.getElementById('emp-department').value || null,
+        position: document.getElementById('emp-position').value.trim(),
+        salary: parseFloat(document.getElementById('emp-salary').value) || 0,
+        status: document.getElementById('emp-status').value,
+        address: document.getElementById('emp-address').value.trim(),
+      };
+
+      try {
+        if (id) {
+          const res = await api.put(`/employees/${id}`, payload);
+          showToast(res.message, 'success');
+        } else {
+          const res = await api.post('/employees', payload);
+          showToast(res.message, 'success');
+        }
+        closeModal();
+        loadEmployees();
+      } catch (err) {}
+    });
+
+    async function handleDelete(id, name) {
+      if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${name}" không? Thao tác này không thể hoàn tác.`)) {
+        try {
+          const res = await api.delete(`/employees/${id}`);
+          showToast(res.message, 'success');
+          loadEmployees();
+        } catch (err) {}
+      }
+    }
+
+    // Search & Filter Events
+    document.getElementById('btn-search').addEventListener('click', () => {
+      currentPage = 1;
+      loadEmployees();
+    });
+
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        currentPage = 1;
+        loadEmployees();
+      }
+    });
+
+    document.getElementById('department-filter').addEventListener('change', () => {
+      currentPage = 1;
+      loadEmployees();
+    });
+
+    document.getElementById('status-filter').addEventListener('change', () => {
+      currentPage = 1;
+      loadEmployees();
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      document.getElementById('search-input').value = '';
+      document.getElementById('department-filter').value = '';
+      document.getElementById('status-filter').value = '';
+      currentPage = 1;
+      loadEmployees();
+    });
+
+    document.getElementById('btn-prev-page').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        loadEmployees();
+      }
+    });
+
+    document.getElementById('btn-next-page').addEventListener('click', () => {
+      currentPage++;
+      loadEmployees();
+    });
+  </script>
+</body>
+</html>

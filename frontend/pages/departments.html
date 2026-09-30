@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý phòng ban - HRM System</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-title">
+          <h2>Quản lý phòng ban</h2>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary btn-sm" id="btn-open-create-dep">+ Thêm phòng ban mới</button>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- Departments Table -->
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã PB</th>
+                <th>Tên phòng ban</th>
+                <th>Trưởng phòng</th>
+                <th>Mô tả chức năng</th>
+                <th>Số nhân viên</th>
+                <th style="text-align: right;">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="departments-tbody">
+              <tr><td colspan="6" style="text-align: center; padding: 30px;">Đang tải danh sách phòng ban...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Department Modal -->
+  <div class="modal-backdrop" id="department-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modal-title">Thêm phòng ban mới</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <form id="department-form">
+        <div class="modal-body">
+          <input type="hidden" id="dep-id">
+
+          <div class="form-group">
+            <label class="form-label" for="dep-name">Tên phòng ban <span style="color:red">*</span></label>
+            <input type="text" id="dep-name" class="form-control" placeholder="Ví dụ: Phòng Kỹ thuật (IT)" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group">
+              <label class="form-label" for="dep-code">Mã phòng ban <span style="color:red">*</span></label>
+              <input type="text" id="dep-code" class="form-control" placeholder="Ví dụ: DEP-IT" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="dep-manager">Trưởng phòng</label>
+              <input type="text" id="dep-manager" class="form-control" placeholder="Ví dụ: Nguyễn Văn A">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="dep-description">Mô tả chức năng & nhiệm vụ</label>
+            <textarea id="dep-description" class="form-control" rows="3" placeholder="Mô tả tóm tắt vai trò của phòng ban..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Hủy bỏ</button>
+          <button type="submit" class="btn btn-primary" id="modal-save-btn">Lưu thông tin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    if (requireAuth()) {
+      renderSidebar('departments');
+      loadDepartments();
+    }
+
+    let departmentsList = [];
+
+    async function loadDepartments() {
+      try {
+        const res = await api.get('/departments');
+        if (res.success) {
+          departmentsList = res.data;
+          renderDepartments();
+        }
+      } catch (err) {
+        console.error('Failed to load departments', err);
+      }
+    }
+
+    function renderDepartments() {
+      const tbody = document.getElementById('departments-tbody');
+      if (departmentsList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">Chưa có phòng ban nào trong hệ thống.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = departmentsList.map(dep => `
+        <tr>
+          <td><span class="badge badge-neutral" style="font-weight: 700;">${dep.code}</span></td>
+          <td>
+            <strong style="color: var(--text-main); font-size: 15px;">${dep.name}</strong>
+          </td>
+          <td>${dep.manager_name || '<em style="color:#94a3b8">Chưa có</em>'}</td>
+          <td style="color: var(--text-muted); max-width: 320px;">${dep.description || '-'}</td>
+          <td>
+            <a href="/pages/employees.html?department_id=${dep.id}" class="badge badge-info" style="text-decoration: none;" title="Xem nhân viên thuộc phòng này">
+              👥 ${dep.employee_count} nhân viên
+            </a>
+          </td>
+          <td style="text-align: right; white-space: nowrap;">
+            <button class="btn btn-secondary btn-sm btn-edit" data-id="${dep.id}" title="Sửa thông tin">✏️</button>
+            <button class="btn btn-danger btn-sm btn-delete" data-id="${dep.id}" data-name="${dep.name}" data-count="${dep.employee_count}" title="Xóa phòng ban">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+      });
+
+      document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', () => handleDelete(btn.dataset.id, btn.dataset.name, parseInt(btn.dataset.count, 10)));
+      });
+    }
+
+    // Modal controls
+    const modalBackdrop = document.getElementById('department-modal');
+    const modalForm = document.getElementById('department-form');
+
+    function openModal() {
+      modalBackdrop.classList.add('show');
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove('show');
+      modalForm.reset();
+      document.getElementById('dep-id').value = '';
+    }
+
+    document.getElementById('btn-open-create-dep').addEventListener('click', () => {
+      document.getElementById('modal-title').textContent = 'Thêm phòng ban mới';
+      document.getElementById('dep-id').value = '';
+      modalForm.reset();
+      openModal();
+    });
+
+    document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+    document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+
+    async function openEditModal(id) {
+      try {
+        const res = await api.get(`/departments/${id}`);
+        if (res.success) {
+          const dep = res.data;
+          document.getElementById('modal-title').textContent = `Chỉnh sửa: ${dep.name}`;
+          document.getElementById('dep-id').value = dep.id;
+          document.getElementById('dep-name').value = dep.name;
+          document.getElementById('dep-code').value = dep.code;
+          document.getElementById('dep-manager').value = dep.manager_name || '';
+          document.getElementById('dep-description').value = dep.description || '';
+          openModal();
+        }
+      } catch (err) {}
+    }
+
+    modalForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('dep-id').value;
+      const payload = {
+        name: document.getElementById('dep-name').value.trim(),
+        code: document.getElementById('dep-code').value.trim().toUpperCase(),
+        manager_name: document.getElementById('dep-manager').value.trim(),
+        description: document.getElementById('dep-description').value.trim(),
+      };
+
+      try {
+        if (id) {
+          const res = await api.put(`/departments/${id}`, payload);
+          showToast(res.message, 'success');
+        } else {
+          const res = await api.post('/departments', payload);
+          showToast(res.message, 'success');
+        }
+        closeModal();
+        loadDepartments();
+      } catch (err) {}
+    });
+
+    async function handleDelete(id, name, employeeCount) {
+      if (employeeCount > 0) {
+        alert(`Không thể xóa phòng ban "${name}" vì đang có ${employeeCount} nhân viên thuộc phòng ban này. Vui lòng chuyển các nhân viên sang phòng ban khác trước.`);
+        return;
+      }
+
+      if (confirm(`Bạn có chắc chắn muốn xóa phòng ban "${name}" không?`)) {
+        try {
+          const res = await api.delete(`/departments/${id}`);
+          showToast(res.message, 'success');
+          loadDepartments();
+        } catch (err) {}
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chấm công - HRM System</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-title">
+          <h2>Chấm công & Điểm danh</h2>
+        </div>
+        <div class="header-actions">
+          <span id="live-clock" style="font-size: 14px; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 6px 14px; border-radius: var(--radius-full);">
+            --:--:--
+          </span>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- Daily Action Card -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 800;">Chấm công hôm nay</h3>
+              <p id="today-text" style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">
+                Đang kiểm tra dữ liệu chấm công...
+              </p>
+            </div>
+            <div style="display: flex; gap: 14px;">
+              <button id="btn-checkin" class="btn btn-success" style="padding: 12px 24px; font-size: 15px;">
+                ⏱️ Check-in (Vào ca)
+              </button>
+              <button id="btn-checkout" class="btn btn-danger" style="padding: 12px 24px; font-size: 15px;">
+                🚪 Check-out (Tan ca)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- History Filter & Table -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <h3 style="font-size: 16px; font-weight: 700;">Lịch sử chấm công chi tiết</h3>
+            <div style="display: flex; gap: 12px;">
+              <select id="filter-month" class="form-control" style="width: auto;">
+                <option value="1">Tháng 1</option>
+                <option value="2">Tháng 2</option>
+                <option value="3">Tháng 3</option>
+                <option value="4">Tháng 4</option>
+                <option value="5">Tháng 5</option>
+                <option value="6">Tháng 6</option>
+                <option value="7">Tháng 7</option>
+                <option value="8">Tháng 8</option>
+                <option value="9">Tháng 9</option>
+                <option value="10">Tháng 10</option>
+                <option value="11">Tháng 11</option>
+                <option value="12">Tháng 12</option>
+              </select>
+              <select id="filter-year" class="form-control" style="width: auto;">
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+              </select>
+              <button id="btn-filter-history" class="btn btn-primary btn-sm">Xem lịch sử</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Nhân viên</th>
+                  <th>Phòng ban</th>
+                  <th>Giờ Check-in</th>
+                  <th>Giờ Check-out</th>
+                  <th>Trạng thái</th>
+                  <th>Ghi chú</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody">
+                <tr><td colspan="7" style="text-align: center; padding: 24px;">Đang tải lịch sử chấm công...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Monthly Summary (for Admin) -->
+        <div class="card" id="summary-card">
+          <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 16px; font-weight: 700;">📊 Bảng tổng hợp công nhân viên trong tháng</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Báo cáo tổng hợp số ngày công, đi muộn, về sớm của toàn bộ nhân viên.</p>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã NV</th>
+                  <th>Họ và tên</th>
+                  <th>Phòng ban</th>
+                  <th style="color: #059669;">Đúng giờ</th>
+                  <th style="color: #d97706;">Đi muộn</th>
+                  <th style="color: #dc2626;">Về sớm</th>
+                  <th>Tổng ngày ghi nhận</th>
+                </tr>
+              </thead>
+              <tbody id="summary-tbody">
+                <tr><td colspan="7" style="text-align: center; padding: 24px;">Đang tải bảng tổng hợp...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/components.js"></script>
+  <script>
+    if (requireAuth()) {
+      renderSidebar('attendance');
+      initAttendancePage();
+    }
+
+    function updateLiveClock() {
+      const now = new Date();
+      document.getElementById('live-clock').textContent = now.toLocaleTimeString('vi-VN') + ' - ' + now.toLocaleDateString('vi-VN');
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    async function initAttendancePage() {
+      const now = new Date();
+      document.getElementById('filter-month').value = now.getMonth() + 1;
+      document.getElementById('filter-year').value = now.getFullYear();
+
+      await Promise.all([
+        loadTodayStatus(),
+        loadHistory(),
+        loadSummary()
+      ]);
+    }
+
+    async function loadTodayStatus() {
+      try {
+        const res = await api.get('/attendance/today');
+        const text = document.getElementById('today-text');
+        const btnIn = document.getElementById('btn-checkin');
+        const btnOut = document.getElementById('btn-checkout');
+
+        if (res.data) {
+          const item = res.data;
+          let msg = `Check-in lúc: <strong>${item.check_in || 'Chưa'}</strong> (${item.status === 'late' ? 'Đi muộn' : 'Đúng giờ'})`;
+          if (item.check_out) {
+            msg += ` • Check-out lúc: <strong>${item.check_out}</strong>`;
+            btnIn.disabled = true;
+            btnOut.disabled = true;
+          } else {
+            btnIn.disabled = true;
+            btnOut.disabled = false;
+          }
+          text.innerHTML = msg;
+        } else {
+          text.textContent = 'Hôm nay bạn chưa thực hiện chấm công.';
+          btnIn.disabled = false;
+          btnOut.disabled = true;
+        }
+      } catch (err) {}
+    }
+
+    document.getElementById('btn-checkin').addEventListener('click', async () => {
+      try {
+        const res = await api.post('/attendance/check-in', {});
+        showToast(res.message, 'success');
+        initAttendancePage();
+      } catch (err) {}
+    });
+
+    document.getElementById('btn-checkout').addEventListener('click', async () => {
+      try {
+        const res = await api.post('/attendance/check-out', {});
+        showToast(res.message, 'success');
+        initAttendancePage();
+      } catch (err) {}
+    });
+
+    async function loadHistory() {
+      const month = document.getElementById('filter-month').value;
+      const year = document.getElementById('filter-year').value;
+
+      try {
+        const res = await api.get(`/attendance/history?month=${month}&year=${year}`);
+        const tbody = document.getElementById('history-tbody');
+
+        if (!res.data || res.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">Không có dữ liệu chấm công trong tháng này.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = res.data.map(item => {
+          let badge = '<span class="badge badge-success">Đúng giờ</span>';
+          if (item.status === 'late') badge = '<span class="badge badge-warning">Đi muộn</span>';
+          if (item.status === 'early_leave') badge = '<span class="badge badge-warning">Về sớm</span>';
+          if (item.status === 'absent') badge = '<span class="badge badge-danger">Vắng mặt</span>';
+
+          return `
+            <tr>
+              <td><strong>${formatDate(item.date)}</strong></td>
+              <td>${item.full_name} (${item.employee_code})</td>
+              <td>${item.department_name || '-'}</td>
+              <td>${item.check_in || '-'}</td>
+              <td>${item.check_out || '-'}</td>
+              <td>${badge}</td>
+              <td>${item.note || '-'}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {}
+    }
+
+    async function loadSummary() {
+      const month = document.getElementById('filter-month').value;
+      const year = document.getElementById('filter-year').value;
+      const user = getCurrentUser();
+
+      // Only show if admin
+      if (user && user.role !== 'admin') {
+        document.getElementById('summary-card').style.display = 'none';
+        return;
+      }
+
+      try {
+        const res = await api.get(`/attendance/summary?month=${month}&year=${year}`);
+        const tbody = document.getElementById('summary-tbody');
+
+        if (!res.data || !res.data.items || res.data.items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">Không có dữ liệu tổng hợp.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = res.data.items.map(item => `
+          <tr>
+            <td><span class="badge badge-neutral">${item.employee_code}</span></td>
+            <td><strong>${item.full_name}</strong></td>
+            <td>${item.department_name || '-'}</td>
+            <td style="color: #059669; font-weight: 700;">${item.present_days} ngày</td>
+            <td style="color: #d97706; font-weight: 700;">${item.late_days} ngày</td>
+            <td style="color: #dc2626; font-weight: 700;">${item.early_leave_days} ngày</td>
+            <td><span class="badge badge-info">${item.total_recorded_days} ngày</span></td>
+          </tr>
+        `).join('');
+      } catch (err) {}
+    }
+
+    document.getElementById('btn-filter-history').addEventListener('click', () => {
+      loadHistory();
+      loadSummary();
+    });
+  </script>
+</body>
+</html>
