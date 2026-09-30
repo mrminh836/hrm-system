@@ -3,120 +3,311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng nhập - Hệ thống Quản lý Nhân sự (HRM)</title>
+  <title>Đăng nhập - HRM Enterprise</title>
   <link rel="stylesheet" href="/assets/css/main.css">
   <style>
     body {
-      background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+      background: radial-gradient(circle at 10% 20%, #0b0f19 0%, #0f172a 100%);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
+      padding: 24px;
+      color: #ffffff;
+      position: relative;
+      overflow-x: hidden;
     }
-    .login-container {
+
+    /* Ambient background glows */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .login-wrapper {
       width: 100%;
-      max-width: 440px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(16px);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      padding: 40px 36px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      max-width: 980px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      background: rgba(17, 23, 38, 0.85);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      z-index: 10;
     }
-    .login-header {
-      text-align: center;
-      margin-bottom: 30px;
+
+    /* Left Showcase Banner */
+    .showcase-pane {
+      padding: 48px;
+      background: linear-gradient(145deg, rgba(30, 27, 75, 0.6), rgba(15, 23, 42, 0.8));
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .login-header .logo-badge {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 16px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: var(--radius-md);
+
+    .brand-logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-area .icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 28px;
-      box-shadow: 0 8px 16px var(--primary-glow);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
     }
-    .login-header h2 {
+
+    .showcase-content h2 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.6px;
+      margin: 24px 0 14px;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .showcase-content p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .feature-list {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      color: #cbd5e1;
+    }
+
+    .feature-item .check-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .showcase-footer {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 32px;
+    }
+
+    /* Right Auth Form */
+    .form-pane {
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #ffffff;
+      color: var(--text-primary);
+    }
+
+    .form-header {
+      margin-bottom: 28px;
+    }
+
+    .form-header h3 {
       font-size: 22px;
       font-weight: 800;
-      color: var(--text-main);
-      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      letter-spacing: -0.4px;
     }
-    .login-header p {
-      font-size: 13px;
+
+    .form-header p {
+      font-size: 13.5px;
       color: var(--text-muted);
       margin-top: 4px;
     }
-    .quick-fill-box {
-      margin-top: 20px;
-      padding: 12px;
-      background: #f1f5f9;
-      border-radius: var(--radius-md);
-      font-size: 12px;
+
+    .quick-card {
+      margin-top: 22px;
+      padding: 14px;
+      background: #f8fafc;
       border: 1px dashed #cbd5e1;
-      text-align: center;
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
     }
-    .btn-quick {
-      margin-top: 6px;
-      background: #e2e8f0;
-      border: none;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
+
+    .quick-card .title {
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quick-btn {
+      width: 100%;
+      margin-top: 8px;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      color: #4338ca;
+      font-size: 12.5px;
       font-weight: 600;
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      color: var(--primary);
       transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
-    .btn-quick:hover {
-      background: var(--primary-light);
+
+    .quick-btn:hover {
+      background: #e0e7ff;
+      border-color: #a5b4fc;
+    }
+
+    @media (max-width: 768px) {
+      .login-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .showcase-pane {
+        display: none;
+      }
+      .form-pane {
+        padding: 32px 24px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-header">
-      <div class="logo-badge">⚡</div>
-      <h2>HRM SYSTEM</h2>
-      <p>Hệ thống Quản lý Nhân sự & Chấm công</p>
+  <div class="login-wrapper">
+    <!-- Left Showcase -->
+    <div class="showcase-pane">
+      <div>
+        <div class="brand-logo-area">
+          <div class="icon-box" id="logo-icon-container"></div>
+          <div>
+            <div style="font-weight: 800; font-size: 16px; color: #fff;">HRM Enterprise</div>
+            <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Workspace v2.0</div>
+          </div>
+        </div>
+
+        <div class="showcase-content">
+          <h2>Quản trị nhân sự & Chấm công chuẩn hóa</h2>
+          <p>Nền tảng tích hợp toàn diện quy trình quản lý hồ sơ, phòng ban và giám sát thời gian thực triển khai bằng Docker Compose.</p>
+
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="check-circle" id="check-icon-1"></div>
+              <span>Xác thực bảo mật JWT & Phân quyền đa cấp độ</span>
+            </div>
+            <div class="feature-item">
+              <div class="check-circle" id="check-icon-2"></div>
+              <span>Hạ tầng Nginx Reverse Proxy mã hóa SSL/TLS</span>
+            </div>
+            <div class="feature-item">
+              <div class="check-circle" id="check-icon-3"></div>
+              <span>Giám sát Prometheus, Grafana & LogQL tập trung</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-footer">
+        © 2026 HRM Enterprise System. Phát triển bởi Đỗ Quang Minh.
+      </div>
     </div>
 
-    <form id="login-form">
-      <div class="form-group">
-        <label class="form-label" for="email">Tài khoản Email</label>
-        <input type="email" id="email" class="form-control" placeholder="name@company.com" required autocomplete="email">
+    <!-- Right Form -->
+    <div class="form-pane">
+      <div class="form-header">
+        <h3>Chào mừng trở lại!</h3>
+        <p>Vui lòng đăng nhập để truy cập trang quản trị</p>
       </div>
 
-      <div class="form-group">
-        <label class="form-label" for="password">Mật khẩu</label>
-        <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="email">Tài khoản Email</label>
+          <input type="email" id="email" class="form-control" placeholder="admin@hrm.local" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Mật khẩu truy cập</label>
+          <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-submit" style="width: 100%; padding: 12px; margin-top: 10px; font-size: 14px;">
+          Đăng nhập vào hệ thống
+        </button>
+      </form>
+
+      <div class="quick-card">
+        <div class="title">
+          <span>⚡ Tài khoản thử nghiệm (Admin)</span>
+        </div>
+        <div style="color: var(--text-muted); margin-top: 4px; font-family: monospace;">
+          admin@hrm.local / Admin@123
+        </div>
+        <button type="button" class="quick-btn" id="btn-fill-admin">
+          Tự động điền tài khoản mẫu
+        </button>
       </div>
-
-      <button type="submit" class="btn btn-primary" id="btn-submit" style="width: 100%; margin-top: 10px; padding: 12px;">
-        Đăng nhập hệ thống
-      </button>
-    </form>
-
-    <div class="quick-fill-box">
-      <div>💡 <strong>Tài khoản Admin thử nghiệm:</strong></div>
-      <div style="color: var(--text-muted); margin-top: 2px;"><code>admin@hrm.local</code> | <code>Admin@123</code></div>
-      <button type="button" class="btn-quick" id="btn-fill-admin">⚡ Điền nhanh tài khoản Admin</button>
     </div>
   </div>
 
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script>
-    // Autofill demo button
+    // Inject icons
+    document.getElementById('logo-icon-container').innerHTML = icons.zap;
+    document.getElementById('check-icon-1').innerHTML = icons.check;
+    document.getElementById('check-icon-2').innerHTML = icons.check;
+    document.getElementById('check-icon-3').innerHTML = icons.check;
+
+    // Quick fill
     document.getElementById('btn-fill-admin').addEventListener('click', () => {
       document.getElementById('email').value = 'admin@hrm.local';
       document.getElementById('password').value = 'Admin@123';
     });
 
+    // Login submit
     const loginForm = document.getElementById('login-form');
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -126,7 +317,7 @@
 
       try {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Đang xác thực...';
+        submitBtn.textContent = 'Đang xác thực thông tin...';
 
         const res = await api.post('/auth/login', { email, password });
         if (res.success) {
@@ -134,11 +325,11 @@
           showToast('Đăng nhập thành công! Đang chuyển hướng...', 'success');
           setTimeout(() => {
             window.location.href = '/pages/dashboard.html';
-          }, 600);
+          }, 500);
         }
       } catch (err) {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Đăng nhập hệ thống';
+        submitBtn.textContent = 'Đăng nhập vào hệ thống';
       }
     });
   </script>

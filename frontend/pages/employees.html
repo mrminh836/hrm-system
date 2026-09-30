@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý nhân viên - HRM System</title>
+  <title>Quản lý nhân viên - HRM Enterprise</title>
   <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 <body>
@@ -12,76 +12,87 @@
 
     <main class="app-main">
       <header class="app-header">
-        <div class="header-title">
-          <h2>Danh sách nhân viên</h2>
+        <div class="header-breadcrumbs">
+          <span>Nhân sự</span>
+          <span id="breadcrumb-sep"></span>
+          <span class="current">Danh sách hồ sơ</span>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-primary btn-sm" id="btn-open-create-modal">+ Thêm nhân viên mới</button>
+        <div class="header-controls">
+          <button class="btn btn-primary btn-sm" id="btn-open-create-modal">
+            <span id="plus-icon-slot"></span>
+            <span>Thêm nhân viên mới</span>
+          </button>
         </div>
       </header>
 
-      <div class="content-container">
-        <!-- Filter & Search Bar -->
-        <div class="filter-bar card" style="padding: 16px 20px; flex-direction: row;">
-          <div style="display: flex; gap: 14px; flex-wrap: wrap; flex: 1;">
-            <div class="search-input-group">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="search-input" class="form-control" placeholder="Tìm theo tên, email, mã NV, SĐT...">
+      <div class="content-wrapper">
+        <!-- Search & Filter Controls -->
+        <div class="card" style="padding: 16px 20px; margin-bottom: 20px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; flex: 1;">
+              <div class="search-bar-wrap">
+                <span id="search-icon-slot"></span>
+                <input type="text" id="search-input" placeholder="Tìm theo tên, email, mã NV, SĐT...">
+              </div>
+
+              <div style="min-width: 200px;">
+                <select id="department-filter" class="form-control">
+                  <option value="">Tất cả phòng ban</option>
+                </select>
+              </div>
+
+              <div style="min-width: 170px;">
+                <select id="status-filter" class="form-control">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="active">Đang làm việc</option>
+                  <option value="probation">Thử việc</option>
+                  <option value="inactive">Tạm nghỉ</option>
+                  <option value="resigned">Đã nghỉ việc</option>
+                </select>
+              </div>
             </div>
 
-            <div style="min-width: 200px;">
-              <select id="department-filter" class="form-control">
-                <option value="">-- Tất cả phòng ban --</option>
-              </select>
+            <div style="display: flex; gap: 10px;">
+              <button id="btn-search" class="btn btn-primary btn-sm">Tìm kiếm</button>
+              <button id="btn-reset" class="btn btn-secondary btn-sm">Đặt lại</button>
             </div>
-
-            <div style="min-width: 160px;">
-              <select id="status-filter" class="form-control">
-                <option value="">-- Tất cả trạng thái --</option>
-                <option value="active">Đang làm việc</option>
-                <option value="probation">Thử việc</option>
-                <option value="inactive">Tạm nghỉ</option>
-                <option value="resigned">Đã nghỉ việc</option>
-              </select>
-            </div>
-          </div>
-
-          <div style="display: flex; gap: 10px;">
-            <button id="btn-search" class="btn btn-primary btn-sm">Tìm kiếm</button>
-            <button id="btn-reset" class="btn btn-secondary btn-sm">Đặt lại</button>
           </div>
         </div>
 
-        <!-- Employees Table -->
-        <div class="table-responsive" style="margin-top: 20px;">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Mã NV</th>
-                <th>Họ và tên</th>
-                <th>Liên hệ</th>
-                <th>Phòng ban</th>
-                <th>Vị trí</th>
-                <th>Lương cơ bản</th>
-                <th>Trạng thái</th>
-                <th style="text-align: right;">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="employees-tbody">
-              <tr><td colspan="8" style="text-align: center; padding: 30px;">Đang tải danh sách nhân viên...</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination Controls -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 0 4px;">
-          <div style="font-size: 13px; color: var(--text-muted);" id="pagination-info">
-            Hiển thị 0 / 0 nhân viên
+        <!-- Data Table Container -->
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã NV</th>
+                  <th>Họ và tên</th>
+                  <th>Liên hệ</th>
+                  <th>Phòng ban</th>
+                  <th>Vị trí</th>
+                  <th>Lương cơ bản</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align: right;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="employees-tbody">
+                <tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">Đang tải danh sách nhân viên...</td></tr>
+              </tbody>
+            </table>
           </div>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-secondary btn-sm" id="btn-prev-page" disabled>‹ Trang trước</button>
-            <span id="page-indicator" style="display: flex; align-items: center; padding: 0 10px; font-size: 13px; font-weight: 600;">Trang 1 / 1</span>
-            <button class="btn btn-secondary btn-sm" id="btn-next-page" disabled>Trang sau ›</button>
+
+          <!-- Pagination Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-top: 1px solid var(--border); background: #f8fafc;">
+            <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;" id="pagination-info">
+              Hiển thị 0 / 0 nhân viên
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-sm" id="btn-prev-page" disabled>‹ Trước</button>
+              <span id="page-indicator" style="display: flex; align-items: center; padding: 0 12px; font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                Trang 1 / 1
+              </span>
+              <button class="btn btn-secondary btn-sm" id="btn-next-page" disabled>Sau ›</button>
+            </div>
           </div>
         </div>
       </div>
@@ -90,23 +101,23 @@
 
   <!-- Create/Edit Employee Modal -->
   <div class="modal-backdrop" id="employee-modal">
-    <div class="modal-container">
-      <div class="modal-header">
+    <div class="modal-box">
+      <div class="modal-head">
         <h3 id="modal-title">Thêm nhân viên mới</h3>
-        <button class="modal-close" id="modal-close-btn">&times;</button>
+        <button class="modal-close-btn" id="modal-close-btn"></button>
       </div>
       <form id="employee-form">
         <div class="modal-body">
           <input type="hidden" id="emp-id">
 
           <div class="form-group">
-            <label class="form-label" for="emp-name">Họ và tên <span style="color:red">*</span></label>
+            <label class="form-label" for="emp-name">Họ và tên nhân viên <span style="color:red">*</span></label>
             <input type="text" id="emp-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" required>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div class="form-group">
-              <label class="form-label" for="emp-email">Email <span style="color:red">*</span></label>
+              <label class="form-label" for="emp-email">Địa chỉ Email <span style="color:red">*</span></label>
               <input type="email" id="emp-email" class="form-control" placeholder="nguyenvana@hrm.local" required>
             </div>
             <div class="form-group">
@@ -132,24 +143,24 @@
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div class="form-group">
-              <label class="form-label" for="emp-department">Phòng ban</label>
+              <label class="form-label" for="emp-department">Phòng ban công tác</label>
               <select id="emp-department" class="form-control">
                 <option value="">-- Chưa gán phòng ban --</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label" for="emp-position">Vị trí / Chức vụ</label>
-              <input type="text" id="emp-position" class="form-control" placeholder="Nhân viên kinh doanh">
+              <label class="form-label" for="emp-position">Vị trí / Chức danh</label>
+              <input type="text" id="emp-position" class="form-control" placeholder="Kỹ sư phần mềm">
             </div>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div class="form-group">
-              <label class="form-label" for="emp-salary">Mức lương (VNĐ)</label>
+              <label class="form-label" for="emp-salary">Mức lương cơ bản (VNĐ)</label>
               <input type="number" id="emp-salary" class="form-control" placeholder="10000000" min="0" step="500000">
             </div>
             <div class="form-group">
-              <label class="form-label" for="emp-status">Trạng thái</label>
+              <label class="form-label" for="emp-status">Trạng thái công tác</label>
               <select id="emp-status" class="form-control">
                 <option value="active">Đang làm việc</option>
                 <option value="probation">Thử việc</option>
@@ -164,14 +175,16 @@
             <textarea id="emp-address" class="form-control" rows="2" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành phố"></textarea>
           </div>
         </div>
-        <div class="modal-footer">
+
+        <div class="modal-foot">
           <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Hủy bỏ</button>
-          <button type="submit" class="btn btn-primary" id="modal-save-btn">Lưu thông tin</button>
+          <button type="submit" class="btn btn-primary" id="modal-save-btn">Lưu thông tin hồ sơ</button>
         </div>
       </form>
     </div>
   </div>
 
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/components.js"></script>
   <script>
@@ -179,6 +192,12 @@
       renderSidebar('employees');
       initEmployeePage();
     }
+
+    // Inject icons
+    document.getElementById('breadcrumb-sep').innerHTML = icons.chevronRight;
+    document.getElementById('plus-icon-slot').innerHTML = icons.plus;
+    document.getElementById('search-icon-slot').innerHTML = icons.search;
+    document.getElementById('modal-close-btn').innerHTML = icons.x;
 
     let currentPage = 1;
     const limit = 10;
@@ -240,54 +259,77 @@
       document.getElementById('btn-next-page').disabled = (page >= totalPages);
 
       if (items.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">Không tìm thấy nhân viên nào phù hợp.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 48px; color: var(--text-muted);">Không tìm thấy nhân viên nào phù hợp với bộ lọc.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = items.map(emp => {
-        let statusBadge = '<span class="badge badge-success">Đang làm việc</span>';
-        if (emp.status === 'probation') statusBadge = '<span class="badge badge-warning">Thử việc</span>';
-        if (emp.status === 'inactive') statusBadge = '<span class="badge badge-neutral">Tạm nghỉ</span>';
-        if (emp.status === 'resigned') statusBadge = '<span class="badge badge-danger">Đã nghỉ việc</span>';
+      const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5'];
+
+      tbody.innerHTML = items.map((emp, idx) => {
+        let statusClass = 'active';
+        let statusText = 'Đang làm việc';
+        if (emp.status === 'probation') { statusClass = 'probation'; statusText = 'Thử việc'; }
+        if (emp.status === 'inactive') { statusClass = 'inactive'; statusText = 'Tạm nghỉ'; }
+        if (emp.status === 'resigned') { statusClass = 'resigned'; statusText = 'Đã nghỉ việc'; }
+
+        const initials = emp.full_name.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase();
+        const colorClass = colors[idx % colors.length];
 
         return `
           <tr>
-            <td><span class="badge badge-neutral">${emp.employee_code}</span></td>
             <td>
-              <a href="/pages/employee-detail.html?id=${emp.id}" style="color: var(--primary); font-weight: 700; text-decoration: none;">
-                ${emp.full_name}
-              </a>
-              <div style="font-size: 11px; color: var(--text-muted);">${emp.gender || 'Nam'} • ${formatDate(emp.date_of_birth)}</div>
+              <span style="font-weight: 700; font-size: 12.5px; color: var(--text-muted); background: #f1f5f9; padding: 4px 8px; border-radius: var(--radius-xs);">
+                ${emp.employee_code}
+              </span>
             </td>
             <td>
-              <div>✉️ ${emp.email}</div>
-              <div style="font-size: 12px; color: var(--text-muted);">📞 ${emp.phone}</div>
+              <div class="user-cell">
+                <div class="avatar-chip ${colorClass}">${initials}</div>
+                <div class="user-cell-meta">
+                  <a href="/pages/employee-detail.html?id=${emp.id}" class="user-cell-name" style="text-decoration: none;">
+                    ${emp.full_name}
+                  </a>
+                  <div class="user-cell-sub">${emp.gender || 'Nam'} • ${formatDate(emp.date_of_birth)}</div>
+                </div>
+              </div>
             </td>
-            <td><strong>${emp.department_name || '<em style="color:#94a3b8">Chưa gán</em>'}</strong></td>
-            <td>${emp.position || '-'}</td>
-            <td><strong style="color: #059669;">${formatCurrency(emp.salary)}</strong></td>
-            <td>${statusBadge}</td>
+            <td>
+              <div style="font-size: 13px; color: var(--text-primary); font-weight: 500;">${emp.email}</div>
+              <div style="font-size: 11.5px; color: var(--text-muted);">${emp.phone}</div>
+            </td>
+            <td>
+              <span style="font-weight: 600; color: var(--text-secondary);">${emp.department_name || '<em style="color:#94a3b8">Chưa gán</em>'}</span>
+            </td>
+            <td><span style="font-weight: 500;">${emp.position || '-'}</span></td>
+            <td><strong style="color: #059669; font-size: 13.5px;">${formatCurrency(emp.salary)}</strong></td>
+            <td>
+              <div class="status-pill ${statusClass}">
+                <div class="status-dot"></div>
+                <span>${statusText}</span>
+              </div>
+            </td>
             <td style="text-align: right; white-space: nowrap;">
-              <a href="/pages/employee-detail.html?id=${emp.id}" class="btn btn-secondary btn-sm" title="Xem chi tiết">👁️</a>
-              <button class="btn btn-secondary btn-sm btn-edit" data-id="${emp.id}" title="Sửa thông tin">✏️</button>
-              <button class="btn btn-danger btn-sm btn-delete" data-id="${emp.id}" data-name="${emp.full_name}" title="Xóa nhân viên">🗑️</button>
+              <div style="display: inline-flex; gap: 6px;">
+                <a href="/pages/employee-detail.html?id=${emp.id}" class="btn-icon" title="Xem hồ sơ">${icons.eye}</a>
+                <button class="btn-icon btn-edit" data-id="${emp.id}" title="Chỉnh sửa">${icons.edit}</button>
+                <button class="btn-icon danger btn-delete" data-id="${emp.id}" data-name="${emp.full_name}" title="Xóa nhân viên">${icons.trash}</button>
+              </div>
             </td>
           </tr>
         `;
       }).join('');
 
-      // Attach edit handlers
+      // Attach handlers
       document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => openEditModal(btn.dataset.id));
       });
 
-      // Attach delete handlers
       document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', () => handleDelete(btn.dataset.id, btn.dataset.name));
       });
     }
 
-    // Modal controls
+    // Modal logic
     const modalBackdrop = document.getElementById('employee-modal');
     const modalForm = document.getElementById('employee-form');
 
@@ -316,7 +358,7 @@
         const res = await api.get(`/employees/${id}`);
         if (res.success) {
           const emp = res.data;
-          document.getElementById('modal-title').textContent = `Chỉnh sửa nhân viên: ${emp.full_name}`;
+          document.getElementById('modal-title').textContent = `Chỉnh sửa: ${emp.full_name}`;
           document.getElementById('emp-id').value = emp.id;
           document.getElementById('emp-name').value = emp.full_name;
           document.getElementById('emp-email').value = emp.email;
@@ -333,7 +375,6 @@
       } catch (err) {}
     }
 
-    // Save (Create / Update)
     modalForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('emp-id').value;
@@ -373,7 +414,7 @@
       }
     }
 
-    // Search & Filter Events
+    // Events
     document.getElementById('btn-search').addEventListener('click', () => {
       currentPage = 1;
       loadEmployees();

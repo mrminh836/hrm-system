@@ -5,6 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý phòng ban - HRM System</title>
   <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    .manager-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .manager-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-full);
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .emp-count-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    .emp-count-pill:hover {
+      background: var(--primary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
   <div class="app-wrapper">
@@ -13,31 +51,89 @@
     <main class="app-main">
       <header class="app-header">
         <div class="header-title">
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">
+            Tổ chức / Cơ cấu phòng ban
+          </div>
           <h2>Quản lý phòng ban</h2>
         </div>
         <div class="header-actions">
-          <button class="btn btn-primary btn-sm" id="btn-open-create-dep">+ Thêm phòng ban mới</button>
+          <button class="btn btn-primary" id="btn-open-create-dep">
+            <span id="icon-plus"></span>
+            Thêm phòng ban mới
+          </button>
         </div>
       </header>
 
       <div class="content-container">
+        <!-- Top Metrics -->
+        <div class="stats-grid" style="margin-bottom: 24px;">
+          <div class="card stat-card">
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+              <span id="stat-icon-building"></span>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Tổng số phòng ban</span>
+              <div class="stat-value" id="kpi-total-dep">0</div>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+              <span id="stat-icon-users"></span>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Nhân sự đã phân bổ</span>
+              <div class="stat-value" id="kpi-assigned-emp">0</div>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+              <span id="stat-icon-shield"></span>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Trưởng phòng đã bổ nhiệm</span>
+              <div class="stat-value" id="kpi-managers">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="card" style="margin-bottom: 24px; padding: 18px 24px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+            <div class="search-input-wrap" style="max-width: 400px; width: 100%;">
+              <span class="search-icon" id="search-icon-slot"></span>
+              <input type="text" id="search-dep-input" class="form-control" placeholder="Tìm theo tên phòng ban, mã PB, trưởng phòng...">
+            </div>
+
+            <div style="font-size: 13px; color: var(--text-muted);">
+              Hiển thị <strong id="dep-count-indicator" style="color: var(--text-main);">0</strong> phòng ban
+            </div>
+          </div>
+        </div>
+
         <!-- Departments Table -->
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Mã PB</th>
-                <th>Tên phòng ban</th>
-                <th>Trưởng phòng</th>
-                <th>Mô tả chức năng</th>
-                <th>Số nhân viên</th>
-                <th style="text-align: right;">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="departments-tbody">
-              <tr><td colspan="6" style="text-align: center; padding: 30px;">Đang tải danh sách phòng ban...</td></tr>
-            </tbody>
-          </table>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 130px;">Mã phòng</th>
+                  <th>Tên phòng ban & Mô tả</th>
+                  <th>Trưởng phòng</th>
+                  <th>Quy mô nhân sự</th>
+                  <th style="text-align: right; width: 120px;">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="departments-tbody">
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    Đang tải dữ liệu phòng ban...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </main>
@@ -47,7 +143,10 @@
   <div class="modal-backdrop" id="department-modal">
     <div class="modal-container">
       <div class="modal-header">
-        <h3 id="modal-title">Thêm phòng ban mới</h3>
+        <div>
+          <h3 id="modal-title" style="font-size: 18px; font-weight: 800;">Thêm phòng ban mới</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Cập nhật thông tin sơ đồ cơ cấu tổ chức doanh nghiệp</p>
+        </div>
         <button class="modal-close" id="modal-close-btn">&times;</button>
       </div>
       <form id="department-form">
@@ -56,23 +155,23 @@
 
           <div class="form-group">
             <label class="form-label" for="dep-name">Tên phòng ban <span style="color:red">*</span></label>
-            <input type="text" id="dep-name" class="form-control" placeholder="Ví dụ: Phòng Kỹ thuật (IT)" required>
+            <input type="text" id="dep-name" class="form-control" placeholder="Ví dụ: Phòng Kỹ thuật Công nghệ (IT)" required>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div class="form-group">
               <label class="form-label" for="dep-code">Mã phòng ban <span style="color:red">*</span></label>
               <input type="text" id="dep-code" class="form-control" placeholder="Ví dụ: DEP-IT" required>
             </div>
             <div class="form-group">
-              <label class="form-label" for="dep-manager">Trưởng phòng</label>
+              <label class="form-label" for="dep-manager">Họ tên Trưởng phòng</label>
               <input type="text" id="dep-manager" class="form-control" placeholder="Ví dụ: Nguyễn Văn A">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="dep-description">Mô tả chức năng & nhiệm vụ</label>
-            <textarea id="dep-description" class="form-control" rows="3" placeholder="Mô tả tóm tắt vai trò của phòng ban..."></textarea>
+            <label class="form-label" for="dep-description">Mô tả chức năng & quyền hạn</label>
+            <textarea id="dep-description" class="form-control" rows="3" placeholder="Mô tả tóm tắt vai trò, nhiệm vụ chính của phòng ban trong công ty..."></textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -83,12 +182,24 @@
     </div>
   </div>
 
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/components.js"></script>
   <script>
     if (requireAuth()) {
       renderSidebar('departments');
+      initIcons();
       loadDepartments();
+    }
+
+    function initIcons() {
+      if (window.icons) {
+        document.getElementById('icon-plus').innerHTML = window.icons.plus;
+        document.getElementById('search-icon-slot').innerHTML = window.icons.search;
+        document.getElementById('stat-icon-building').innerHTML = window.icons.building;
+        document.getElementById('stat-icon-users').innerHTML = window.icons.users;
+        document.getElementById('stat-icon-shield').innerHTML = window.icons.shield;
+      }
     }
 
     let departmentsList = [];
@@ -98,39 +209,79 @@
         const res = await api.get('/departments');
         if (res.success) {
           departmentsList = res.data;
-          renderDepartments();
+          updateKPIs();
+          renderDepartments(departmentsList);
         }
       } catch (err) {
         console.error('Failed to load departments', err);
       }
     }
 
-    function renderDepartments() {
+    function updateKPIs() {
+      document.getElementById('kpi-total-dep').textContent = departmentsList.length;
+      const totalEmp = departmentsList.reduce((sum, d) => sum + (parseInt(d.employee_count, 10) || 0), 0);
+      document.getElementById('kpi-assigned-emp').textContent = totalEmp;
+      const managersCount = departmentsList.filter(d => d.manager_name && d.manager_name.trim().length > 0).length;
+      document.getElementById('kpi-managers').textContent = managersCount;
+    }
+
+    function renderDepartments(list) {
       const tbody = document.getElementById('departments-tbody');
-      if (departmentsList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">Chưa có phòng ban nào trong hệ thống.</td></tr>';
+      document.getElementById('dep-count-indicator').textContent = list.length;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
+              Không tìm thấy phòng ban nào phù hợp.
+            </td>
+          </tr>
+        `;
         return;
       }
 
-      tbody.innerHTML = departmentsList.map(dep => `
-        <tr>
-          <td><span class="badge badge-neutral" style="font-weight: 700;">${dep.code}</span></td>
-          <td>
-            <strong style="color: var(--text-main); font-size: 15px;">${dep.name}</strong>
-          </td>
-          <td>${dep.manager_name || '<em style="color:#94a3b8">Chưa có</em>'}</td>
-          <td style="color: var(--text-muted); max-width: 320px;">${dep.description || '-'}</td>
-          <td>
-            <a href="/pages/employees.html?department_id=${dep.id}" class="badge badge-info" style="text-decoration: none;" title="Xem nhân viên thuộc phòng này">
-              👥 ${dep.employee_count} nhân viên
-            </a>
-          </td>
-          <td style="text-align: right; white-space: nowrap;">
-            <button class="btn btn-secondary btn-sm btn-edit" data-id="${dep.id}" title="Sửa thông tin">✏️</button>
-            <button class="btn btn-danger btn-sm btn-delete" data-id="${dep.id}" data-name="${dep.name}" data-count="${dep.employee_count}" title="Xóa phòng ban">🗑️</button>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = list.map(dep => {
+        const mgrInitials = dep.manager_name ? dep.manager_name.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase() : '--';
+        const mgrDisplay = dep.manager_name 
+          ? `<div class="manager-cell">
+               <div class="manager-avatar">${mgrInitials}</div>
+               <span style="font-weight: 600; color: var(--text-main);">${dep.manager_name}</span>
+             </div>`
+          : `<span style="color: var(--text-light); font-style: italic; font-size: 13px;">Chưa bổ nhiệm</span>`;
+
+        return `
+          <tr>
+            <td>
+              <span class="badge badge-neutral" style="font-family: monospace; font-weight: 700; font-size: 12px; letter-spacing: 0.05em;">
+                ${dep.code}
+              </span>
+            </td>
+            <td>
+              <div style="font-weight: 700; color: var(--text-main); font-size: 15px;">
+                ${dep.name}
+              </div>
+              <div style="color: var(--text-muted); font-size: 13px; margin-top: 3px; max-width: 360px;">
+                ${dep.description || '<span style="color: var(--text-light)">Chưa có mô tả</span>'}
+              </div>
+            </td>
+            <td>${mgrDisplay}</td>
+            <td>
+              <a href="/pages/employees.html?department_id=${dep.id}" class="emp-count-pill" title="Xem danh sách nhân viên trong phòng">
+                ${window.icons ? window.icons.users : ''}
+                <span>${dep.employee_count} thành viên</span>
+              </a>
+            </td>
+            <td style="text-align: right; white-space: nowrap;">
+              <button class="btn btn-secondary btn-sm btn-edit" data-id="${dep.id}" title="Chỉnh sửa thông tin" style="padding: 6px 10px; margin-right: 4px;">
+                ${window.icons ? window.icons.edit : 'Sửa'}
+              </button>
+              <button class="btn btn-danger btn-sm btn-delete" data-id="${dep.id}" data-name="${dep.name}" data-count="${dep.employee_count}" title="Xóa phòng ban" style="padding: 6px 10px;">
+                ${window.icons ? window.icons.trash : 'Xóa'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
 
       document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => openEditModal(btn.dataset.id));
@@ -140,6 +291,22 @@
         btn.addEventListener('click', () => handleDelete(btn.dataset.id, btn.dataset.name, parseInt(btn.dataset.count, 10)));
       });
     }
+
+    // Search filter
+    document.getElementById('search-dep-input').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        renderDepartments(departmentsList);
+        return;
+      }
+      const filtered = departmentsList.filter(d => 
+        d.name.toLowerCase().includes(q) ||
+        d.code.toLowerCase().includes(q) ||
+        (d.manager_name && d.manager_name.toLowerCase().includes(q)) ||
+        (d.description && d.description.toLowerCase().includes(q))
+      );
+      renderDepartments(filtered);
+    });
 
     // Modal controls
     const modalBackdrop = document.getElementById('department-modal');
@@ -210,7 +377,7 @@
         return;
       }
 
-      if (confirm(`Bạn có chắc chắn muốn xóa phòng ban "${name}" không?`)) {
+      if (confirm(`Bạn có chắc chắn muốn xóa phòng ban "${name}" không? Thao tác này không thể hoàn tác.`)) {
         try {
           const res = await api.delete(`/departments/${id}`);
           showToast(res.message, 'success');

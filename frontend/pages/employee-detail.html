@@ -3,8 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hồ sơ nhân viên - HRM System</title>
+  <title>Chi tiết hồ sơ nhân sự - HRM System</title>
   <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    .profile-hero {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .profile-cover {
+      height: 120px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
+      position: relative;
+    }
+    .profile-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.25) 0%, transparent 60%);
+    }
+    .profile-body {
+      padding: 0 32px 28px 32px;
+      position: relative;
+    }
+    .profile-main-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: -50px;
+    }
+    .profile-avatar-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 22px;
+    }
+    .profile-avatar-large {
+      width: 100px;
+      height: 100px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, var(--primary) 0%, #3730a3 100%);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid var(--surface);
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+      flex-shrink: 0;
+    }
+    .profile-info-main {
+      padding-bottom: 6px;
+    }
+    .profile-name-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .profile-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+    .profile-subtitle {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .profile-sub-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .profile-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 6px;
+    }
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border-color);
+      font-size: 14px;
+    }
+    .info-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .info-label {
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-value {
+      font-weight: 600;
+      color: var(--text-main);
+      text-align: right;
+    }
+  </style>
 </head>
 <body>
   <div class="app-wrapper">
@@ -13,125 +130,173 @@
     <main class="app-main">
       <header class="app-header">
         <div class="header-title">
-          <h2>Chi tiết hồ sơ nhân viên</h2>
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">
+            <a href="/pages/employees.html" style="color: var(--primary); text-decoration: none;">Nhân sự</a> / Chi tiết hồ sơ
+          </div>
+          <h2>Hồ sơ nhân sự</h2>
         </div>
         <div class="header-actions">
-          <a href="/pages/employees.html" class="btn btn-secondary btn-sm">← Quay lại danh sách</a>
+          <a href="/pages/employees.html" class="btn btn-secondary btn-sm" id="btn-back">
+            <span id="icon-back"></span>
+            Quay lại danh sách
+          </a>
         </div>
       </header>
 
       <div class="content-container">
-        <!-- Profile Card Header -->
-        <div class="card" style="margin-bottom: 24px;">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
-            <div style="display: flex; align-items: center; gap: 20px;">
-              <div id="emp-avatar" style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 800; box-shadow: 0 8px 16px var(--primary-glow);">
-                --
-              </div>
-              <div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <h1 id="emp-name" style="font-size: 22px; font-weight: 800;">-</h1>
-                  <span id="emp-code-badge" class="badge badge-neutral">-</span>
-                  <span id="emp-status-badge" class="badge badge-success">-</span>
+        <!-- Profile Hero -->
+        <div class="profile-hero">
+          <div class="profile-cover"></div>
+          <div class="profile-body">
+            <div class="profile-main-row">
+              <div class="profile-avatar-wrap">
+                <div id="emp-avatar" class="profile-avatar-large">--</div>
+                <div class="profile-info-main">
+                  <div class="profile-name-row">
+                    <h1 id="emp-name" class="profile-name">Đang tải...</h1>
+                    <span id="emp-code-badge" class="badge badge-neutral">-</span>
+                    <span id="emp-status-badge" class="badge badge-success">-</span>
+                  </div>
+                  <div class="profile-subtitle">
+                    <span class="profile-sub-item">
+                      <span id="icon-briefcase" style="color: var(--text-light);"></span>
+                      <strong id="emp-position" style="color: var(--text-main);">-</strong>
+                    </span>
+                    <span>•</span>
+                    <span class="profile-sub-item">
+                      <span id="icon-building" style="color: var(--text-light);"></span>
+                      <span id="emp-department">-</span>
+                    </span>
+                    <span>•</span>
+                    <span class="profile-sub-item">
+                      <span id="icon-mail" style="color: var(--text-light);"></span>
+                      <span id="emp-quick-email">-</span>
+                    </span>
+                  </div>
                 </div>
-                <div style="margin-top: 4px; color: var(--text-muted); font-size: 14px;">
-                  <span id="emp-position">-</span> • <strong id="emp-department" style="color: var(--text-main);">-</strong>
-                </div>
               </div>
-            </div>
 
-            <div style="display: flex; gap: 10px;">
-              <button class="btn btn-danger btn-sm" id="btn-delete-profile">Xóa hồ sơ</button>
+              <div class="profile-actions">
+                <button class="btn btn-danger btn-sm" id="btn-delete-profile">
+                  <span id="icon-trash"></span>
+                  Xóa nhân sự
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Details Grid -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 24px;">
+        <!-- 2 Column Details -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 28px;">
           <!-- Personal Info -->
           <div class="card">
-            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-              📋 Thông tin cá nhân & Liên hệ
-            </h3>
-            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Email công việc:</span>
-                <strong id="emp-email">-</strong>
+            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 18px;">
+              <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span id="icon-card-user" style="color: var(--primary);"></span>
+                Thông tin cá nhân & Liên hệ
+              </h3>
+            </div>
+            <div class="info-list">
+              <div class="info-item">
+                <span class="info-label">
+                  <span id="icon-item-mail"></span> Email công việc
+                </span>
+                <span class="info-value" id="emp-email">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Số điện thoại:</span>
-                <strong id="emp-phone">-</strong>
+              <div class="info-item">
+                <span class="info-label">
+                  <span id="icon-item-phone"></span> Số điện thoại
+                </span>
+                <span class="info-value" id="emp-phone">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Ngày sinh:</span>
-                <strong id="emp-dob">-</strong>
+              <div class="info-item">
+                <span class="info-label">
+                  <span id="icon-item-cal"></span> Ngày sinh
+                </span>
+                <span class="info-value" id="emp-dob">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Giới tính:</span>
-                <strong id="emp-gender">-</strong>
+              <div class="info-item">
+                <span class="info-label">
+                  <span id="icon-item-shield"></span> Giới tính
+                </span>
+                <span class="info-value" id="emp-gender">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Địa chỉ:</span>
-                <strong id="emp-address" style="text-align: right; max-width: 60%;">-</strong>
+              <div class="info-item">
+                <span class="info-label">
+                  <span id="icon-item-pin"></span> Địa chỉ thường trú
+                </span>
+                <span class="info-value" id="emp-address" style="max-width: 60%;">-</span>
               </div>
             </div>
           </div>
 
           <!-- Employment Info -->
           <div class="card">
-            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-              💼 Thông tin công việc & Đãi ngộ
-            </h3>
-            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Phòng ban:</span>
-                <strong id="emp-department-full">-</strong>
+            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 18px;">
+              <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span id="icon-card-briefcase" style="color: var(--primary);"></span>
+                Thông tin chức vụ & Hợp đồng
+              </h3>
+            </div>
+            <div class="info-list">
+              <div class="info-item">
+                <span class="info-label">Phòng ban trực thuộc</span>
+                <span class="info-value" id="emp-department-full">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Chức vụ:</span>
-                <strong id="emp-position-full">-</strong>
+              <div class="info-item">
+                <span class="info-label">Chức danh công việc</span>
+                <span class="info-value" id="emp-position-full">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Ngày vào công ty:</span>
-                <strong id="emp-hire-date">-</strong>
+              <div class="info-item">
+                <span class="info-label">Ngày gia nhập công ty</span>
+                <span class="info-value" id="emp-hire-date">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Mức lương cơ bản:</span>
-                <strong id="emp-salary" style="color: #059669; font-size: 16px;">-</strong>
+              <div class="info-item">
+                <span class="info-label">Mức lương cơ bản</span>
+                <span class="info-value" id="emp-salary" style="color: var(--success); font-size: 17px; font-weight: 800;">-</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Ngày tạo hồ sơ:</span>
-                <strong id="emp-created-at">-</strong>
+              <div class="info-item">
+                <span class="info-label">Ngày tạo hồ sơ</span>
+                <span class="info-value" id="emp-created-at">-</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Attendance Stats & History -->
+        <!-- Attendance Stats & Log Section -->
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="font-size: 16px; font-weight: 700;">⏱️ Thống kê & Lịch sử chấm công</h3>
-            <span id="stats-month-label" style="font-size: 12px; font-weight: 600; color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: var(--radius-sm);">
-              Thống kê tháng hiện tại
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span id="icon-card-clock" style="color: var(--primary);"></span>
+                Thống kê & Nhật ký chấm công
+              </h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                Hiệu suất làm việc thực tế của nhân sự theo tháng
+              </p>
+            </div>
+            <span id="stats-month-label" class="badge badge-neutral" style="padding: 6px 12px; font-weight: 600;">
+              Tháng hiện tại
             </span>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 20px;">
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
-              <div style="font-size: 12px; color: #166534; font-weight: 600;">Đúng giờ</div>
-              <div id="stat-present-val" style="font-size: 22px; font-weight: 800; color: #15803d; margin-top: 4px;">0</div>
+          <!-- KPI Mini Metric Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px;">
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
+              <div style="font-size: 12px; color: var(--success); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Đúng giờ</div>
+              <div id="stat-present-val" style="font-size: 26px; font-weight: 800; color: #059669; margin-top: 4px;">0</div>
             </div>
-            <div style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
-              <div style="font-size: 12px; color: #92400e; font-weight: 600;">Đi muộn</div>
-              <div id="stat-late-val" style="font-size: 22px; font-weight: 800; color: #b45309; margin-top: 4px;">0</div>
+            <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
+              <div style="font-size: 12px; color: var(--warning); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Đi muộn</div>
+              <div id="stat-late-val" style="font-size: 26px; font-weight: 800; color: #d97706; margin-top: 4px;">0</div>
             </div>
-            <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
-              <div style="font-size: 12px; color: #9a3412; font-weight: 600;">Về sớm</div>
-              <div id="stat-early-val" style="font-size: 22px; font-weight: 800; color: #c2410c; margin-top: 4px;">0</div>
+            <div style="background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
+              <div style="font-size: 12px; color: #ea580c; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Về sớm</div>
+              <div id="stat-early-val" style="font-size: 26px; font-weight: 800; color: #c2410c; margin-top: 4px;">0</div>
             </div>
-            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 12px 16px; text-align: center;">
-              <div style="font-size: 12px; color: #1e40af; font-weight: 600;">Tổng ngày làm</div>
-              <div id="stat-total-val" style="font-size: 22px; font-weight: 800; color: #1d4ed8; margin-top: 4px;">0</div>
+            <div style="background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
+              <div style="font-size: 12px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Tổng ngày làm</div>
+              <div id="stat-total-val" style="font-size: 26px; font-weight: 800; color: var(--primary); margin-top: 4px;">0</div>
             </div>
           </div>
 
@@ -147,7 +312,7 @@
                 </tr>
               </thead>
               <tbody id="attendance-tbody">
-                <tr><td colspan="5" style="text-align: center;">Chưa có dữ liệu chấm công.</td></tr>
+                <tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">Đang tải dữ liệu chấm công...</td></tr>
               </tbody>
             </table>
           </div>
@@ -156,12 +321,33 @@
     </main>
   </div>
 
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/components.js"></script>
   <script>
     if (requireAuth()) {
       renderSidebar('employees');
+      initIcons();
       loadEmployeeProfile();
+    }
+
+    function initIcons() {
+      if (window.icons) {
+        document.getElementById('icon-back').innerHTML = window.icons.arrowLeft;
+        document.getElementById('icon-trash').innerHTML = window.icons.trash;
+        document.getElementById('icon-briefcase').innerHTML = window.icons.briefcase;
+        document.getElementById('icon-building').innerHTML = window.icons.building;
+        document.getElementById('icon-mail').innerHTML = window.icons.mail;
+        document.getElementById('icon-card-user').innerHTML = window.icons.users;
+        document.getElementById('icon-card-briefcase').innerHTML = window.icons.briefcase;
+        document.getElementById('icon-card-clock').innerHTML = window.icons.clock;
+
+        document.getElementById('icon-item-mail').innerHTML = window.icons.mail;
+        document.getElementById('icon-item-phone').innerHTML = window.icons.phone;
+        document.getElementById('icon-item-cal').innerHTML = window.icons.calendar;
+        document.getElementById('icon-item-shield').innerHTML = window.icons.shield;
+        document.getElementById('icon-item-pin').innerHTML = window.icons.mapPin;
+      }
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -185,19 +371,21 @@
           
           let statusLabel = 'Đang làm việc';
           let statusClass = 'badge-success';
-          if (emp.status === 'probation') { statusLabel = 'Thử việc'; statusClass = 'badge-warning'; }
-          if (emp.status === 'inactive') { statusLabel = 'Tạm nghỉ'; statusClass = 'badge-neutral'; }
-          if (emp.status === 'resigned') { statusLabel = 'Đã nghỉ việc'; statusClass = 'badge-danger'; }
+          let dotColor = 'var(--success)';
+          if (emp.status === 'probation') { statusLabel = 'Thử việc'; statusClass = 'badge-warning'; dotColor = 'var(--warning)'; }
+          if (emp.status === 'inactive') { statusLabel = 'Tạm nghỉ'; statusClass = 'badge-neutral'; dotColor = 'var(--text-light)'; }
+          if (emp.status === 'resigned') { statusLabel = 'Đã nghỉ việc'; statusClass = 'badge-danger'; dotColor = 'var(--danger)'; }
 
           const statusBadge = document.getElementById('emp-status-badge');
-          statusBadge.textContent = statusLabel;
+          statusBadge.innerHTML = `<span class="status-dot" style="background: ${dotColor};"></span> ${statusLabel}`;
           statusBadge.className = `badge ${statusClass}`;
 
           document.getElementById('emp-position').textContent = emp.position || 'Nhân viên';
           document.getElementById('emp-department').textContent = emp.department_name || 'Chưa gán phòng ban';
+          document.getElementById('emp-quick-email').textContent = emp.email || '-';
 
-          document.getElementById('emp-email').textContent = emp.email;
-          document.getElementById('emp-phone').textContent = emp.phone;
+          document.getElementById('emp-email').textContent = emp.email || '-';
+          document.getElementById('emp-phone').textContent = emp.phone || '-';
           document.getElementById('emp-dob').textContent = formatDate(emp.date_of_birth);
           document.getElementById('emp-gender').textContent = emp.gender || 'Nam';
           document.getElementById('emp-address').textContent = emp.address || 'Chưa cập nhật';
@@ -211,27 +399,27 @@
           // Render attendances
           const attTbody = document.getElementById('attendance-tbody');
           if (!emp.recentAttendances || emp.recentAttendances.length === 0) {
-            attTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">Nhân viên này chưa có bản ghi chấm công nào.</td></tr>';
+            attTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 30px;">Nhân viên này chưa có bản ghi chấm công nào.</td></tr>';
           } else {
             attTbody.innerHTML = emp.recentAttendances.map(a => {
-              let badge = '<span class="badge badge-success">Đúng giờ</span>';
-              if (a.status === 'late') badge = '<span class="badge badge-warning">Đi muộn</span>';
-              if (a.status === 'early_leave') badge = '<span class="badge badge-warning">Về sớm</span>';
-              if (a.status === 'absent') badge = '<span class="badge badge-danger">Vắng mặt</span>';
+              let badge = '<span class="badge badge-success"><span class="status-dot" style="background:var(--success)"></span> Đúng giờ</span>';
+              if (a.status === 'late') badge = '<span class="badge badge-warning"><span class="status-dot" style="background:var(--warning)"></span> Đi muộn</span>';
+              if (a.status === 'early_leave') badge = '<span class="badge badge-warning"><span class="status-dot" style="background:var(--warning)"></span> Về sớm</span>';
+              if (a.status === 'absent') badge = '<span class="badge badge-danger"><span class="status-dot" style="background:var(--danger)"></span> Vắng mặt</span>';
 
               return `
                 <tr>
                   <td><strong>${formatDate(a.date)}</strong></td>
-                  <td>${a.check_in || '-'}</td>
-                  <td>${a.check_out || '-'}</td>
+                  <td><span style="font-family: monospace; font-size: 13px; font-weight: 600;">${a.check_in || '-'}</span></td>
+                  <td><span style="font-family: monospace; font-size: 13px; font-weight: 600;">${a.check_out || '-'}</span></td>
                   <td>${badge}</td>
-                  <td>${a.note || '-'}</td>
+                  <td style="color: var(--text-muted);">${a.note || '-'}</td>
                 </tr>
               `;
             }).join('');
           }
 
-          // Fetch and display individual attendance statistics
+          // Fetch attendance statistics
           try {
             const statsRes = await api.get(`/attendance/stats/${emp.id}`);
             if (statsRes.success && statsRes.data) {
@@ -248,13 +436,13 @@
 
           // Delete action
           document.getElementById('btn-delete-profile').addEventListener('click', async () => {
-            if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${emp.full_name}" không?`)) {
+            if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${emp.full_name}" không? Thao tác này không thể hoàn tác.`)) {
               try {
                 const dRes = await api.delete(`/employees/${emp.id}`);
                 showToast(dRes.message, 'success');
                 setTimeout(() => {
                   window.location.href = '/pages/employees.html';
-                }, 800);
+                }, 700);
               } catch (e) {}
             }
           });

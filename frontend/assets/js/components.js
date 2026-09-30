@@ -1,5 +1,6 @@
 /**
- * HRM Shared UI Components (Sidebar, Header, Layout, Logout)
+ * HRM Modern SaaS UI Components (Sidebar, Topbar, Layout, Navigation)
+ * Professional vector icons and accessible structure
  */
 
 function renderSidebar(activeKey = 'dashboard') {
@@ -11,41 +12,61 @@ function renderSidebar(activeKey = 'dashboard') {
     ? user.full_name.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase()
     : 'AD';
 
+  const ic = window.icons || {};
+
   const menuItems = [
-    { key: 'dashboard', label: 'Bảng điều khiển', icon: '📊', url: '/pages/dashboard.html' },
-    { key: 'employees', label: 'Quản lý nhân viên', icon: '👥', url: '/pages/employees.html' },
-    { key: 'departments', label: 'Quản lý phòng ban', icon: '🏢', url: '/pages/departments.html' },
-    { key: 'attendance', label: 'Chấm công', icon: '⏱️', url: '/pages/attendance.html' },
+    { section: 'TỔNG QUAN' },
+    { key: 'dashboard', label: 'Bảng điều khiển', icon: ic.dashboard || '📊', url: '/pages/dashboard.html' },
+    { section: 'QUẢN TRỊ NHÂN SỰ' },
+    { key: 'employees', label: 'Hồ sơ nhân viên', icon: ic.users || '👥', url: '/pages/employees.html' },
+    { key: 'departments', label: 'Cơ cấu phòng ban', icon: ic.building || '🏢', url: '/pages/departments.html' },
+    { section: 'VẬN HÀNH & BÁO CÁO' },
+    { key: 'attendance', label: 'Chấm công & Bảng công', icon: ic.clock || '⏱️', url: '/pages/attendance.html' },
   ];
 
   sidebarContainer.innerHTML = `
     <aside class="app-sidebar">
-      <div class="sidebar-header">
-        <div class="brand-icon">⚡</div>
-        <div class="brand-info">
-          <h1>HRM SYSTEM</h1>
-          <p>Quản lý nhân sự</p>
+      <div class="sidebar-brand">
+        <div class="brand-symbol">
+          ${ic.zap || '⚡'}
+        </div>
+        <div class="brand-text">
+          <h1>HRM Enterprise</h1>
+          <span>Human Resources</span>
         </div>
       </div>
 
-      <nav class="sidebar-menu">
-        <div class="menu-label">Menu chức năng</div>
-        ${menuItems.map(item => `
-          <a href="${item.url}" class="menu-item ${activeKey === item.key ? 'active' : ''}">
-            <i>${item.icon}</i>
-            <span>${item.label}</span>
-          </a>
-        `).join('')}
+      <nav class="sidebar-nav">
+        ${menuItems.map(item => {
+          if (item.section) {
+            return `<div class="nav-section-title">${item.section}</div>`;
+          }
+          const isActive = (activeKey === item.key);
+          return `
+            <a href="${item.url}" class="nav-link ${isActive ? 'active' : ''}">
+              ${item.icon}
+              <span>${item.label}</span>
+            </a>
+          `;
+        }).join('')}
       </nav>
 
-      <div class="sidebar-footer">
-        <div class="user-profile-badge">
-          <div class="user-avatar">${initials}</div>
-          <div class="user-meta">
-            <div class="user-name" title="${user.full_name}">${user.full_name}</div>
-            <div class="user-role">${user.role === 'admin' ? 'Quản trị viên' : 'Nhân viên'}</div>
+      <div class="sidebar-user">
+        <div class="user-card">
+          <div class="user-avatar-circle">
+            ${initials}
+            <div class="user-status-dot"></div>
           </div>
-          <button class="btn-logout" id="logout-btn" title="Đăng xuất">⏻</button>
+          <div class="user-info">
+            <div class="user-name-text" title="${user.full_name}">${user.full_name}</div>
+            <div class="user-role-text">
+              <span>●</span>
+              <span>${user.role === 'admin' ? 'Quản trị viên' : 'Nhân viên'}</span>
+            </div>
+          </div>
+          <button class="btn-logout-icon" id="logout-btn" title="Đăng xuất khỏi hệ thống">
+            ${ic.logout || '⏻'}
+          </button>
         </div>
       </div>
     </aside>
@@ -57,7 +78,7 @@ function renderSidebar(activeKey = 'dashboard') {
       showToast('Đã đăng xuất thành công.');
       setTimeout(() => {
         window.location.href = '/pages/login.html';
-      }, 500);
+      }, 400);
     }
   });
 }
