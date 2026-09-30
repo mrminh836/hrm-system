@@ -1,318 +1,292 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chi tiết hồ sơ nhân sự - HRM System</title>
-  <link rel="stylesheet" href="/assets/css/main.css">
-  <style>
-    .profile-hero {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      margin-bottom: 28px;
-      box-shadow: var(--shadow-sm);
-    }
-    .profile-cover {
-      height: 120px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
-      position: relative;
-    }
-    .profile-cover::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.25) 0%, transparent 60%);
-    }
-    .profile-body {
-      padding: 0 32px 28px 32px;
-      position: relative;
-    }
-    .profile-main-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-top: -50px;
-    }
-    .profile-avatar-wrap {
-      display: flex;
-      align-items: flex-end;
-      gap: 22px;
-    }
-    .profile-avatar-large {
-      width: 100px;
-      height: 100px;
-      border-radius: var(--radius-xl);
-      background: linear-gradient(135deg, var(--primary) 0%, #3730a3 100%);
-      color: #fff;
-      font-size: 34px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 4px solid var(--surface);
-      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
-      flex-shrink: 0;
-    }
-    .profile-info-main {
-      padding-bottom: 6px;
-    }
-    .profile-name-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .profile-name {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text-main);
-      letter-spacing: -0.02em;
-    }
-    .profile-subtitle {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-top: 6px;
-      flex-wrap: wrap;
-    }
-    .profile-sub-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .profile-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding-bottom: 6px;
-    }
-    .info-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .info-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px dashed var(--border-color);
-      font-size: 14px;
-    }
-    .info-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-    .info-label {
-      color: var(--text-muted);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .info-value {
-      font-weight: 600;
-      color: var(--text-main);
-      text-align: right;
-    }
-  </style>
-</head>
-<body>
-  <div class="app-wrapper">
-    <div id="sidebar-container"></div>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Chi tiết hồ sơ nhân sự - HRM Pro Enterprise</title>
+  
+  <!-- Fonts & Icons from Stitch -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-    <main class="app-main">
-      <header class="app-header">
-        <div class="header-title">
-          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">
-            <a href="/pages/employees.html" style="color: var(--primary); text-decoration: none;">Nhân sự</a> / Chi tiết hồ sơ
+  <!-- Tailwind CSS with Stitch Theme Tokens -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-container": "#5c647a",
+            "tertiary-container": "#0062d2",
+            "background": "#f8f9ff",
+            "on-primary-fixed": "#001946",
+            "outline-variant": "#c3c6d6",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#bec6e0",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#0048af",
+            "on-surface-variant": "#424654",
+            "on-secondary-fixed": "#131b2e",
+            "surface-variant": "#d3e4fe",
+            "surface-container": "#e5eeff",
+            "secondary-container": "#dae2fd",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-secondary": "#ffffff",
+            "outline": "#737785",
+            "on-surface": "#0b1c30",
+            "on-primary-container": "#dee5ff",
+            "inverse-primary": "#b1c5ff",
+            "on-tertiary-container": "#dce5ff",
+            "on-background": "#0b1c30",
+            "tertiary": "#004ba4",
+            "surface-container-high": "#dce9ff",
+            "surface-container-highest": "#d3e4fe",
+            "primary-fixed-dim": "#b1c5ff",
+            "secondary-fixed": "#dae2fd",
+            "surface-dim": "#cbdbf5",
+            "on-tertiary-fixed": "#001a42",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "secondary": "#565e74",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#dae2ff",
+            "error-container": "#ffdad6",
+            "surface-tint": "#0957cc",
+            "inverse-surface": "#213145",
+            "on-primary": "#ffffff",
+            "on-primary-fixed-variant": "#00419e",
+            "on-tertiary-fixed-variant": "#004395",
+            "surface-bright": "#f8f9ff",
+            "primary-container": "#1e60d5",
+            "surface-container-low": "#eff4ff",
+            "tertiary-fixed": "#d8e2ff",
+            "inverse-on-surface": "#eaf1ff",
+            "tertiary-fixed-dim": "#adc6ff",
+            "surface": "#f8f9ff"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "margin-mobile": "1rem"
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background font-sans text-on-surface antialiased min-h-screen">
+  <!-- Sidebar Container -->
+  <div id="sidebar-container"></div>
+
+  <!-- Main Content Layout -->
+  <div class="pl-64">
+    <main class="relative pt-16 min-h-screen bg-background w-full px-space-xl">
+      <div class="flex flex-col w-full pb-space-xl">
+        <!-- Breadcrumb & Back Bar -->
+        <div class="py-space-md flex items-center justify-between">
+          <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+            <a href="/pages/employees.html" class="hover:text-primary font-medium">Nhân sự</a>
+            <span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+            <span class="text-on-surface font-semibold" id="crumb-name">Chi tiết hồ sơ</span>
           </div>
-          <h2>Hồ sơ nhân sự</h2>
-        </div>
-        <div class="header-actions">
-          <a href="/pages/employees.html" class="btn btn-secondary btn-sm" id="btn-back">
-            <span id="icon-back"></span>
-            Quay lại danh sách
+
+          <a href="/pages/employees.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface hover:bg-surface-container-high transition-colors">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span>Quay lại danh sách</span>
           </a>
         </div>
-      </header>
 
-      <div class="content-container">
-        <!-- Profile Hero -->
-        <div class="profile-hero">
-          <div class="profile-cover"></div>
-          <div class="profile-body">
-            <div class="profile-main-row">
-              <div class="profile-avatar-wrap">
-                <div id="emp-avatar" class="profile-avatar-large">--</div>
-                <div class="profile-info-main">
-                  <div class="profile-name-row">
-                    <h1 id="emp-name" class="profile-name">Đang tải...</h1>
-                    <span id="emp-code-badge" class="badge badge-neutral">-</span>
-                    <span id="emp-status-badge" class="badge badge-success">-</span>
-                  </div>
-                  <div class="profile-subtitle">
-                    <span class="profile-sub-item">
-                      <span id="icon-briefcase" style="color: var(--text-light);"></span>
-                      <strong id="emp-position" style="color: var(--text-main);">-</strong>
-                    </span>
-                    <span>•</span>
-                    <span class="profile-sub-item">
-                      <span id="icon-building" style="color: var(--text-light);"></span>
-                      <span id="emp-department">-</span>
-                    </span>
-                    <span>•</span>
-                    <span class="profile-sub-item">
-                      <span id="icon-mail" style="color: var(--text-light);"></span>
-                      <span id="emp-quick-email">-</span>
-                    </span>
-                  </div>
+        <!-- Profile Hero Header -->
+        <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-surface-container p-6 mb-space-lg">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex items-center gap-5">
+              <div class="w-20 h-20 rounded-2xl bg-primary-container text-on-primary font-bold text-2xl flex items-center justify-center shadow-md flex-shrink-0" id="emp-avatar">
+                --
+              </div>
+              <div class="flex flex-col">
+                <div class="flex flex-wrap items-center gap-3">
+                  <h1 class="text-2xl font-bold text-on-surface" id="emp-name">Đang tải...</h1>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-surface-container text-on-surface-variant" id="emp-code">---</span>
+                  <span id="emp-status-badge" class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span>Đang làm việc</span>
+                  </span>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-4 text-xs text-on-surface-variant mt-2">
+                  <span class="flex items-center gap-1 font-semibold text-on-surface">
+                    <span class="material-symbols-outlined text-[16px] text-primary">work</span>
+                    <span id="emp-position">-</span>
+                  </span>
+                  <span>•</span>
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px] text-outline">apartment</span>
+                    <span id="emp-department">-</span>
+                  </span>
+                  <span>•</span>
+                  <span class="flex items-center gap-1 font-mono">
+                    <span class="material-symbols-outlined text-[16px] text-outline">mail</span>
+                    <span id="emp-quick-email">-</span>
+                  </span>
+                  <span>•</span>
+                  <span class="flex items-center gap-1 font-mono">
+                    <span class="material-symbols-outlined text-[16px] text-outline">call</span>
+                    <span id="emp-quick-phone">-</span>
+                  </span>
                 </div>
               </div>
+            </div>
 
-              <div class="profile-actions">
-                <button class="btn btn-danger btn-sm" id="btn-delete-profile">
-                  <span id="icon-trash"></span>
-                  Xóa nhân sự
-                </button>
+            <div class="flex items-center gap-2 self-end md:self-center">
+              <button class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold transition-colors" id="btn-delete-profile">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+                <span>Xóa hồ sơ</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Detailed Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg mb-space-xl">
+          <!-- Col 1: Thông tin cá nhân & Liên hệ -->
+          <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-6">
+            <div class="flex items-center gap-2 pb-3 mb-4 border-b border-surface-container text-sm font-bold text-on-surface">
+              <span class="material-symbols-outlined text-primary text-[20px]">person</span>
+              <span>Thông tin cá nhân &amp; Liên hệ</span>
+            </div>
+
+            <div class="space-y-3.5 text-xs">
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Email công việc:</span>
+                <span class="font-semibold text-on-surface font-mono" id="emp-email">-</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Số điện thoại:</span>
+                <span class="font-semibold text-on-surface font-mono" id="emp-phone">-</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Ngày sinh:</span>
+                <span class="font-semibold text-on-surface" id="emp-dob">-</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Giới tính:</span>
+                <span class="font-semibold text-on-surface" id="emp-gender">-</span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-outline">Địa chỉ thường trú:</span>
+                <span class="font-semibold text-on-surface text-right max-w-[65%]" id="emp-address">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Thông tin chức vụ & Hợp đồng -->
+          <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-6">
+            <div class="flex items-center gap-2 pb-3 mb-4 border-b border-surface-container text-sm font-bold text-on-surface">
+              <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+              <span>Thông tin chức vụ &amp; Hợp đồng</span>
+            </div>
+
+            <div class="space-y-3.5 text-xs">
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Phòng ban trực thuộc:</span>
+                <span class="font-semibold text-on-surface" id="emp-department-full">-</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Chức danh công việc:</span>
+                <span class="font-semibold text-on-surface" id="emp-position-full">-</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Ngày gia nhập công ty:</span>
+                <span class="font-semibold text-on-surface" id="emp-hire-date">-</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-surface-container-low">
+                <span class="text-outline">Mức lương cơ bản:</span>
+                <span class="font-bold text-emerald-600 text-sm" id="emp-salary">-</span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-outline">Ngày tạo hồ sơ:</span>
+                <span class="font-semibold text-on-surface" id="emp-created-at">-</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 2 Column Details -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 28px;">
-          <!-- Personal Info -->
-          <div class="card">
-            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 18px;">
-              <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <span id="icon-card-user" style="color: var(--primary);"></span>
-                Thông tin cá nhân & Liên hệ
-              </h3>
-            </div>
-            <div class="info-list">
-              <div class="info-item">
-                <span class="info-label">
-                  <span id="icon-item-mail"></span> Email công việc
-                </span>
-                <span class="info-value" id="emp-email">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">
-                  <span id="icon-item-phone"></span> Số điện thoại
-                </span>
-                <span class="info-value" id="emp-phone">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">
-                  <span id="icon-item-cal"></span> Ngày sinh
-                </span>
-                <span class="info-value" id="emp-dob">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">
-                  <span id="icon-item-shield"></span> Giới tính
-                </span>
-                <span class="info-value" id="emp-gender">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">
-                  <span id="icon-item-pin"></span> Địa chỉ thường trú
-                </span>
-                <span class="info-value" id="emp-address" style="max-width: 60%;">-</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Employment Info -->
-          <div class="card">
-            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 18px;">
-              <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <span id="icon-card-briefcase" style="color: var(--primary);"></span>
-                Thông tin chức vụ & Hợp đồng
-              </h3>
-            </div>
-            <div class="info-list">
-              <div class="info-item">
-                <span class="info-label">Phòng ban trực thuộc</span>
-                <span class="info-value" id="emp-department-full">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Chức danh công việc</span>
-                <span class="info-value" id="emp-position-full">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Ngày gia nhập công ty</span>
-                <span class="info-value" id="emp-hire-date">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Mức lương cơ bản</span>
-                <span class="info-value" id="emp-salary" style="color: var(--success); font-size: 17px; font-weight: 800;">-</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Ngày tạo hồ sơ</span>
-                <span class="info-value" id="emp-created-at">-</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Attendance Stats & Log Section -->
-        <div class="card">
-          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <!-- Monthly Attendance KPI Cards -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-6 mb-space-xl">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
             <div>
-              <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <span id="icon-card-clock" style="color: var(--primary);"></span>
-                Thống kê & Nhật ký chấm công
-              </h3>
-              <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
-                Hiệu suất làm việc thực tế của nhân sự theo tháng
-              </p>
+              <div class="flex items-center gap-2 text-sm font-bold text-on-surface">
+                <span class="material-symbols-outlined text-primary text-[20px]">calendar_month</span>
+                <span>Thống kê chuyên cần của nhân sự trong tháng</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Dữ liệu ghi nhận từ máy chấm công vân tay / FaceID</p>
             </div>
-            <span id="stats-month-label" class="badge badge-neutral" style="padding: 6px 12px; font-weight: 600;">
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-surface-container text-on-surface" id="stats-month-label">
               Tháng hiện tại
             </span>
           </div>
 
-          <!-- KPI Mini Metric Grid -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px;">
-            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
-              <div style="font-size: 12px; color: var(--success); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Đúng giờ</div>
-              <div id="stat-present-val" style="font-size: 26px; font-weight: 800; color: #059669; margin-top: 4px;">0</div>
+          <!-- 4 Mini KPI Cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-100 flex flex-col items-center justify-center text-center">
+              <span class="text-xs font-bold text-emerald-800 uppercase">Đúng giờ</span>
+              <span class="text-2xl font-extrabold text-emerald-700 mt-1" id="stat-present-val">0</span>
+              <span class="text-[11px] text-emerald-600 mt-0.5">ngày công chuẩn</span>
             </div>
-            <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
-              <div style="font-size: 12px; color: var(--warning); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Đi muộn</div>
-              <div id="stat-late-val" style="font-size: 26px; font-weight: 800; color: #d97706; margin-top: 4px;">0</div>
+
+            <div class="p-4 rounded-xl bg-amber-50 border border-amber-100 flex flex-col items-center justify-center text-center">
+              <span class="text-xs font-bold text-amber-800 uppercase">Đi muộn</span>
+              <span class="text-2xl font-extrabold text-amber-700 mt-1" id="stat-late-val">0</span>
+              <span class="text-[11px] text-amber-600 mt-0.5">lần ghi nhận</span>
             </div>
-            <div style="background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
-              <div style="font-size: 12px; color: #ea580c; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Về sớm</div>
-              <div id="stat-early-val" style="font-size: 26px; font-weight: 800; color: #c2410c; margin-top: 4px;">0</div>
+
+            <div class="p-4 rounded-xl bg-orange-50 border border-orange-100 flex flex-col items-center justify-center text-center">
+              <span class="text-xs font-bold text-orange-800 uppercase">Về sớm</span>
+              <span class="text-2xl font-extrabold text-orange-700 mt-1" id="stat-early-val">0</span>
+              <span class="text-[11px] text-orange-600 mt-0.5">lần ghi nhận</span>
             </div>
-            <div style="background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.2); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
-              <div style="font-size: 12px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">Tổng ngày làm</div>
-              <div id="stat-total-val" style="font-size: 26px; font-weight: 800; color: var(--primary); margin-top: 4px;">0</div>
+
+            <div class="p-4 rounded-xl bg-primary/10 border border-primary/20 flex flex-col items-center justify-center text-center">
+              <span class="text-xs font-bold text-primary uppercase">Tổng ngày làm</span>
+              <span class="text-2xl font-extrabold text-primary mt-1" id="stat-total-val">0</span>
+              <span class="text-[11px] text-primary/80 mt-0.5">ngày tích lũy</span>
             </div>
           </div>
 
-          <div class="table-responsive">
-            <table class="data-table">
+          <!-- Attendance Log Table -->
+          <div class="overflow-x-auto border border-surface-container rounded-lg">
+            <table class="w-full text-left text-xs">
               <thead>
-                <tr>
-                  <th>Ngày</th>
-                  <th>Giờ Check-in</th>
-                  <th>Giờ Check-out</th>
-                  <th>Trạng thái</th>
-                  <th>Ghi chú</th>
+                <tr class="bg-surface-container-low font-semibold text-outline uppercase tracking-wider">
+                  <th class="py-3 px-4">Ngày</th>
+                  <th class="py-3 px-4">Giờ Check-in</th>
+                  <th class="py-3 px-4">Giờ Check-out</th>
+                  <th class="py-3 px-4">Trạng thái</th>
+                  <th class="py-3 px-4">Ghi chú</th>
                 </tr>
               </thead>
-              <tbody id="attendance-tbody">
-                <tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">Đang tải dữ liệu chấm công...</td></tr>
+              <tbody class="divide-y divide-surface-container" id="attendance-tbody">
+                <tr>
+                  <td colspan="5" class="py-6 text-center text-outline">Đang tải nhật ký chấm công...</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -321,33 +295,12 @@
     </main>
   </div>
 
-  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/components.js"></script>
   <script>
     if (requireAuth()) {
-      renderSidebar('employees');
-      initIcons();
-      loadEmployeeProfile();
-    }
-
-    function initIcons() {
-      if (window.icons) {
-        document.getElementById('icon-back').innerHTML = window.icons.arrowLeft;
-        document.getElementById('icon-trash').innerHTML = window.icons.trash;
-        document.getElementById('icon-briefcase').innerHTML = window.icons.briefcase;
-        document.getElementById('icon-building').innerHTML = window.icons.building;
-        document.getElementById('icon-mail').innerHTML = window.icons.mail;
-        document.getElementById('icon-card-user').innerHTML = window.icons.users;
-        document.getElementById('icon-card-briefcase').innerHTML = window.icons.briefcase;
-        document.getElementById('icon-card-clock').innerHTML = window.icons.clock;
-
-        document.getElementById('icon-item-mail').innerHTML = window.icons.mail;
-        document.getElementById('icon-item-phone').innerHTML = window.icons.phone;
-        document.getElementById('icon-item-cal').innerHTML = window.icons.calendar;
-        document.getElementById('icon-item-shield').innerHTML = window.icons.shield;
-        document.getElementById('icon-item-pin').innerHTML = window.icons.mapPin;
-      }
+      renderSidebar('employees', 'Chi tiết hồ sơ nhân sự');
+      loadProfile();
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -358,31 +311,39 @@
       window.location.href = '/pages/employees.html';
     }
 
-    async function loadEmployeeProfile() {
+    async function loadProfile() {
       try {
         const res = await api.get(`/employees/${empId}`);
         if (res.success) {
           const emp = res.data;
 
-          const initials = emp.full_name.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase();
+          const initials = emp.full_name ? emp.full_name.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase() : '--';
           document.getElementById('emp-avatar').textContent = initials;
           document.getElementById('emp-name').textContent = emp.full_name;
-          document.getElementById('emp-code-badge').textContent = emp.employee_code;
-          
-          let statusLabel = 'Đang làm việc';
-          let statusClass = 'badge-success';
-          let dotColor = 'var(--success)';
-          if (emp.status === 'probation') { statusLabel = 'Thử việc'; statusClass = 'badge-warning'; dotColor = 'var(--warning)'; }
-          if (emp.status === 'inactive') { statusLabel = 'Tạm nghỉ'; statusClass = 'badge-neutral'; dotColor = 'var(--text-light)'; }
-          if (emp.status === 'resigned') { statusLabel = 'Đã nghỉ việc'; statusClass = 'badge-danger'; dotColor = 'var(--danger)'; }
+          document.getElementById('crumb-name').textContent = emp.full_name;
+          document.getElementById('emp-code').textContent = emp.employee_code;
 
-          const statusBadge = document.getElementById('emp-status-badge');
-          statusBadge.innerHTML = `<span class="status-dot" style="background: ${dotColor};"></span> ${statusLabel}`;
-          statusBadge.className = `badge ${statusClass}`;
+          let statusLabel = 'Đang làm việc';
+          let statusDot = 'bg-emerald-600';
+          let statusBg = 'bg-emerald-50 text-emerald-700';
+          if (emp.status === 'probation') {
+            statusLabel = 'Thử việc';
+            statusDot = 'bg-amber-600';
+            statusBg = 'bg-amber-50 text-amber-700';
+          } else if (emp.status === 'resigned' || emp.status === 'inactive') {
+            statusLabel = 'Đã nghỉ việc';
+            statusDot = 'bg-slate-400';
+            statusBg = 'bg-slate-100 text-slate-600';
+          }
+
+          const badgeEl = document.getElementById('emp-status-badge');
+          badgeEl.className = `inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold ${statusBg}`;
+          badgeEl.innerHTML = `<span class="w-2 h-2 rounded-full ${statusDot}"></span> <span>${statusLabel}</span>`;
 
           document.getElementById('emp-position').textContent = emp.position || 'Nhân viên';
           document.getElementById('emp-department').textContent = emp.department_name || 'Chưa gán phòng ban';
           document.getElementById('emp-quick-email').textContent = emp.email || '-';
+          document.getElementById('emp-quick-phone').textContent = emp.phone || '-';
 
           document.getElementById('emp-email').textContent = emp.email || '-';
           document.getElementById('emp-phone').textContent = emp.phone || '-';
@@ -399,27 +360,27 @@
           // Render attendances
           const attTbody = document.getElementById('attendance-tbody');
           if (!emp.recentAttendances || emp.recentAttendances.length === 0) {
-            attTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 30px;">Nhân viên này chưa có bản ghi chấm công nào.</td></tr>';
+            attTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-outline">Chưa có nhật ký chấm công nào.</td></tr>';
           } else {
             attTbody.innerHTML = emp.recentAttendances.map(a => {
-              let badge = '<span class="badge badge-success"><span class="status-dot" style="background:var(--success)"></span> Đúng giờ</span>';
-              if (a.status === 'late') badge = '<span class="badge badge-warning"><span class="status-dot" style="background:var(--warning)"></span> Đi muộn</span>';
-              if (a.status === 'early_leave') badge = '<span class="badge badge-warning"><span class="status-dot" style="background:var(--warning)"></span> Về sớm</span>';
-              if (a.status === 'absent') badge = '<span class="badge badge-danger"><span class="status-dot" style="background:var(--danger)"></span> Vắng mặt</span>';
+              let badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">Đúng giờ</span>';
+              if (a.status === 'late') badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700">Đi muộn</span>';
+              if (a.status === 'early_leave') badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-orange-700">Về sớm</span>';
+              if (a.status === 'absent') badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-red-700">Vắng mặt</span>';
 
               return `
-                <tr>
-                  <td><strong>${formatDate(a.date)}</strong></td>
-                  <td><span style="font-family: monospace; font-size: 13px; font-weight: 600;">${a.check_in || '-'}</span></td>
-                  <td><span style="font-family: monospace; font-size: 13px; font-weight: 600;">${a.check_out || '-'}</span></td>
-                  <td>${badge}</td>
-                  <td style="color: var(--text-muted);">${a.note || '-'}</td>
+                <tr class="hover:bg-surface-container-low transition-colors">
+                  <td class="py-2.5 px-4 font-semibold text-on-surface">${formatDate(a.date)}</td>
+                  <td class="py-2.5 px-4 font-mono font-medium">${a.check_in || '-'}</td>
+                  <td class="py-2.5 px-4 font-mono font-medium">${a.check_out || '-'}</td>
+                  <td class="py-2.5 px-4">${badge}</td>
+                  <td class="py-2.5 px-4 text-outline">${a.note || '-'}</td>
                 </tr>
               `;
             }).join('');
           }
 
-          // Fetch attendance statistics
+          // Stats
           try {
             const statsRes = await api.get(`/attendance/stats/${emp.id}`);
             if (statsRes.success && statsRes.data) {
@@ -430,19 +391,15 @@
               document.getElementById('stat-total-val').textContent = s.total_days || 0;
               document.getElementById('stats-month-label').textContent = `Tháng ${s.month}/${s.year}`;
             }
-          } catch (e) {
-            console.warn('Could not load attendance stats', e);
-          }
+          } catch (e) {}
 
-          // Delete action
+          // Delete
           document.getElementById('btn-delete-profile').addEventListener('click', async () => {
-            if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${emp.full_name}" không? Thao tác này không thể hoàn tác.`)) {
+            if (confirm(`Bạn có chắc chắn muốn xóa hồ sơ nhân viên "${emp.full_name}" không?`)) {
               try {
-                const dRes = await api.delete(`/employees/${emp.id}`);
-                showToast(dRes.message, 'success');
-                setTimeout(() => {
-                  window.location.href = '/pages/employees.html';
-                }, 700);
+                const res = await api.delete(`/employees/${emp.id}`);
+                showToast(res.message, 'success');
+                setTimeout(() => window.location.href = '/pages/employees.html', 500);
               } catch (e) {}
             }
           });

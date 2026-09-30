@@ -1,309 +1,295 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chấm công & Điểm danh - HRM System</title>
-  <link rel="stylesheet" href="/assets/css/main.css">
-  <style>
-    .punch-card-terminal {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%);
-      border-radius: var(--radius-xl);
-      padding: 32px;
-      color: #fff;
-      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);
-      margin-bottom: 28px;
-      position: relative;
-      overflow: hidden;
-    }
-    .punch-card-terminal::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .terminal-content {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
-    }
-    .terminal-clock-display {
-      font-family: 'JetBrains Mono', monospace, ui-monospace, sans-serif;
-      font-size: 42px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      color: #f8fafc;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .terminal-date-display {
-      font-size: 14px;
-      color: #94a3b8;
-      font-weight: 500;
-    }
-    .terminal-status-box {
-      margin-top: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(10px);
-      padding: 8px 16px;
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      font-size: 13px;
-    }
-    .terminal-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .punch-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 28px;
-      font-size: 15px;
-      font-weight: 700;
-      border-radius: var(--radius-lg);
-      border: none;
-      cursor: pointer;
-      transition: all var(--transition-base);
-    }
-    .punch-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      filter: grayscale(1);
-    }
-    .punch-btn-in {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #fff;
-      box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.4);
-    }
-    .punch-btn-in:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px -4px rgba(16, 185, 129, 0.5);
-    }
-    .punch-btn-out {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: #fff;
-      box-shadow: 0 8px 20px -4px rgba(239, 68, 68, 0.4);
-    }
-    .punch-btn-out:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px -4px rgba(239, 68, 68, 0.5);
-    }
-    .summary-badge-cell {
-      font-weight: 700;
-      font-size: 13px;
-    }
-  </style>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Chấm công & Điểm danh - HRM Pro Enterprise</title>
+  
+  <!-- Fonts & Icons from Stitch -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS with Stitch Theme Tokens -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-container": "#5c647a",
+            "tertiary-container": "#0062d2",
+            "background": "#f8f9ff",
+            "on-primary-fixed": "#001946",
+            "outline-variant": "#c3c6d6",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#bec6e0",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#0048af",
+            "on-surface-variant": "#424654",
+            "on-secondary-fixed": "#131b2e",
+            "surface-variant": "#d3e4fe",
+            "surface-container": "#e5eeff",
+            "secondary-container": "#dae2fd",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-secondary": "#ffffff",
+            "outline": "#737785",
+            "on-surface": "#0b1c30",
+            "on-primary-container": "#dee5ff",
+            "inverse-primary": "#b1c5ff",
+            "on-tertiary-container": "#dce5ff",
+            "on-background": "#0b1c30",
+            "tertiary": "#004ba4",
+            "surface-container-high": "#dce9ff",
+            "surface-container-highest": "#d3e4fe",
+            "primary-fixed-dim": "#b1c5ff",
+            "secondary-fixed": "#dae2fd",
+            "surface-dim": "#cbdbf5",
+            "on-tertiary-fixed": "#001a42",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "secondary": "#565e74",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#dae2ff",
+            "error-container": "#ffdad6",
+            "surface-tint": "#0957cc",
+            "inverse-surface": "#213145",
+            "on-primary": "#ffffff",
+            "on-primary-fixed-variant": "#00419e",
+            "on-tertiary-fixed-variant": "#004395",
+            "surface-bright": "#f8f9ff",
+            "primary-container": "#1e60d5",
+            "surface-container-low": "#eff4ff",
+            "tertiary-fixed": "#d8e2ff",
+            "inverse-on-surface": "#eaf1ff",
+            "tertiary-fixed-dim": "#adc6ff",
+            "surface": "#f8f9ff"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "margin-mobile": "1rem"
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
 </head>
-<body>
-  <div class="app-wrapper">
-    <div id="sidebar-container"></div>
+<body class="bg-background font-sans text-on-surface antialiased min-h-screen">
+  <!-- Sidebar Container -->
+  <div id="sidebar-container"></div>
 
-    <main class="app-main">
-      <header class="app-header">
-        <div class="header-title">
-          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">
-            Quản trị nhân sự / Chấm công
+  <!-- Main Content Layout -->
+  <div class="pl-64">
+    <main class="relative pt-16 min-h-screen bg-background w-full px-space-xl">
+      <div class="flex flex-col w-full pb-space-xl">
+        <!-- Header Page Title & Action Bar -->
+        <section class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md py-space-lg">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Đồng bộ máy chủ thời gian thực (GMT+7 NTP Synced)</span>
+            </div>
+            <h1 class="text-3xl font-bold text-on-surface tracking-tight">Chấm công &amp; Điểm danh</h1>
+            <p class="text-sm text-on-surface-variant mt-0.5">Ghi nhận giờ làm việc, kiểm soát chuyên cần và tổng hợp bảng công nhân sự.</p>
           </div>
-          <h2>Chấm công & Điểm danh</h2>
-        </div>
-        <div class="header-actions">
-          <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);">
-            <span class="status-dot status-dot-pulse"></span>
-            Máy chủ đồng bộ thời gian thực
-          </div>
-        </div>
-      </header>
+        </section>
 
-      <div class="content-container">
-        <!-- Punch Card Terminal Widget -->
-        <div class="punch-card-terminal">
-          <div class="terminal-content">
+        <!-- Stitch Punch Card Terminal Widget -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white p-8 mb-space-lg shadow-xl">
+          <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-primary/20 blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
-              <div class="terminal-clock-display" id="live-clock">--:--:--</div>
-              <div class="terminal-date-display" id="live-date">Đang lấy dữ liệu thời gian...</div>
-              <div class="terminal-status-box">
-                <span class="status-dot" id="terminal-dot" style="background: var(--text-light);"></span>
-                <span id="today-text">Đang kiểm tra dữ liệu chấm công hôm nay...</span>
+              <div class="flex items-center gap-2 text-xs text-slate-400 uppercase font-semibold tracking-wider">
+                <span class="material-symbols-outlined text-[16px] text-emerald-400">schedule</span>
+                <span id="terminal-date-str">Đang đồng bộ...</span>
+              </div>
+              <div class="text-5xl font-extrabold tracking-wider font-mono text-white mt-1" id="liveClock">
+                --:--:--
+              </div>
+              <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs border border-white/10">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="terminal-dot"></span>
+                <span id="today-status-text">Đang kiểm tra dữ liệu chấm công hôm nay...</span>
               </div>
             </div>
 
-            <div class="terminal-actions">
-              <button id="btn-checkin" class="punch-btn punch-btn-in">
-                <span id="icon-punch-in"></span>
+            <!-- Big Action Buttons -->
+            <div class="flex flex-wrap items-center gap-4">
+              <button id="btn-checkin" class="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-sm shadow-lg shadow-emerald-900/30 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined text-[22px]">fingerprint</span>
                 <span>Vào ca (Check-in)</span>
               </button>
-              <button id="btn-checkout" class="punch-btn punch-btn-out">
-                <span id="icon-punch-out"></span>
+
+              <button id="btn-checkout" class="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-sm shadow-lg shadow-rose-900/30 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined text-[22px]">logout</span>
                 <span>Tan ca (Check-out)</span>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- History Filter Bar -->
-        <div class="card" style="margin-bottom: 24px; padding: 18px 24px;">
-          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span id="icon-filter-clock" style="color: var(--primary);"></span>
-              <h3 style="font-size: 16px; font-weight: 700;">Nhật ký chấm công nhân sự</h3>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <label for="filter-month" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Tháng:</label>
-                <select id="filter-month" class="form-control" style="width: auto; padding: 8px 14px;">
-                  <option value="1">Tháng 1</option>
-                  <option value="2">Tháng 2</option>
-                  <option value="3">Tháng 3</option>
-                  <option value="4">Tháng 4</option>
-                  <option value="5">Tháng 5</option>
-                  <option value="6">Tháng 6</option>
-                  <option value="7">Tháng 7</option>
-                  <option value="8">Tháng 8</option>
-                  <option value="9">Tháng 9</option>
-                  <option value="10">Tháng 10</option>
-                  <option value="11">Tháng 11</option>
-                  <option value="12">Tháng 12</option>
-                </select>
-              </div>
-
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <label for="filter-year" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Năm:</label>
-                <select id="filter-year" class="form-control" style="width: auto; padding: 8px 14px;">
-                  <option value="2026">2026</option>
-                  <option value="2025">2025</option>
-                </select>
-              </div>
-
-              <button id="btn-filter-history" class="btn btn-primary btn-sm" style="padding: 9px 18px;">
-                <span id="icon-refresh"></span>
-                Áp dụng lọc
-              </button>
-            </div>
+        <!-- Filter & Search Toolbar -->
+        <section class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-surface-container mb-space-md flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2 text-sm font-bold text-on-surface">
+            <span class="material-symbols-outlined text-primary text-[20px]">history</span>
+            <span>Nhật ký chấm công nhân sự</span>
           </div>
-        </div>
 
-        <!-- History Table -->
-        <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 28px;">
-          <div class="table-responsive">
-            <table class="data-table">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-outline">Tháng:</span>
+              <select id="filter-month" class="h-9 px-3 bg-surface-container-low rounded-lg text-xs font-semibold text-on-surface border-0 focus:ring-2 focus:ring-primary/25 cursor-pointer">
+                <option value="1">Tháng 1</option>
+                <option value="2">Tháng 2</option>
+                <option value="3">Tháng 3</option>
+                <option value="4">Tháng 4</option>
+                <option value="5">Tháng 5</option>
+                <option value="6">Tháng 6</option>
+                <option value="7">Tháng 7</option>
+                <option value="8">Tháng 8</option>
+                <option value="9">Tháng 9</option>
+                <option value="10">Tháng 10</option>
+                <option value="11">Tháng 11</option>
+                <option value="12">Tháng 12</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-outline">Năm:</span>
+              <select id="filter-year" class="h-9 px-3 bg-surface-container-low rounded-lg text-xs font-semibold text-on-surface border-0 focus:ring-2 focus:ring-primary/25 cursor-pointer">
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+              </select>
+            </div>
+
+            <button id="btn-filter-history" class="flex items-center gap-1.5 px-3.5 h-9 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all">
+              <span class="material-symbols-outlined text-[16px]">filter_alt</span>
+              <span>Áp dụng</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Main History Log Table -->
+        <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container overflow-hidden mb-space-xl flex flex-col">
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-left border-collapse text-xs">
               <thead>
-                <tr>
-                  <th style="width: 140px;">Ngày</th>
-                  <th>Nhân viên</th>
-                  <th>Phòng ban</th>
-                  <th>Giờ Check-in</th>
-                  <th>Giờ Check-out</th>
-                  <th>Trạng thái</th>
-                  <th>Ghi chú</th>
+                <tr class="bg-surface-container-low text-on-surface-variant font-semibold uppercase tracking-wider">
+                  <th class="py-3 px-space-md">Ngày</th>
+                  <th class="py-3 px-space-md">Nhân viên</th>
+                  <th class="py-3 px-space-md">Phòng ban</th>
+                  <th class="py-3 px-space-md">Giờ Check-in</th>
+                  <th class="py-3 px-space-md">Giờ Check-out</th>
+                  <th class="py-3 px-space-md">Trạng thái</th>
+                  <th class="py-3 px-space-md">Ghi chú</th>
                 </tr>
               </thead>
-              <tbody id="history-tbody">
-                <tr><td colspan="7" style="text-align: center; padding: 36px; color: var(--text-muted);">Đang tải lịch sử chấm công...</td></tr>
+              <tbody class="divide-y divide-surface-container" id="history-tbody">
+                <tr>
+                  <td colspan="7" class="py-10 text-center text-outline">
+                    Đang tải nhật ký chấm công...
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
-        </div>
+        </section>
 
-        <!-- Monthly Summary for Admin -->
-        <div class="card" id="summary-card" style="padding: 0; overflow: hidden;">
-          <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <!-- Monthly Attendance Summary for Admin -->
+        <section id="summary-section" class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container overflow-hidden flex flex-col">
+          <div class="p-space-md border-b border-surface-container flex items-center justify-between">
             <div>
-              <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <span id="icon-summary-chart" style="color: var(--primary);"></span>
-                Bảng tổng hợp công toàn công ty trong tháng
-              </h3>
-              <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
-                Báo cáo tổng hợp số ngày công, đi muộn, về sớm phục vụ tính lương
-              </p>
+              <div class="flex items-center gap-2 text-sm font-bold text-on-surface">
+                <span class="material-symbols-outlined text-primary text-[20px]">table_chart</span>
+                <span>Bảng tổng hợp công tháng (Quản trị viên)</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Báo cáo số ngày làm đúng giờ, đi muộn, về sớm của toàn thể nhân sự phục vụ tính lương.</p>
             </div>
-            <span class="badge badge-primary">Quyền Quản trị viên</span>
+            <span class="px-2.5 py-1 rounded bg-secondary-container text-on-secondary-fixed-variant text-xs font-semibold">Quyền Quản trị</span>
           </div>
 
-          <div class="table-responsive">
-            <table class="data-table">
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-left border-collapse text-xs">
               <thead>
-                <tr>
-                  <th style="width: 120px;">Mã NV</th>
-                  <th>Họ và tên</th>
-                  <th>Phòng ban</th>
-                  <th style="color: #059669;">Đúng giờ</th>
-                  <th style="color: #d97706;">Đi muộn</th>
-                  <th style="color: #dc2626;">Về sớm</th>
-                  <th>Tổng ngày ghi nhận</th>
+                <tr class="bg-surface-container-low text-on-surface-variant font-semibold uppercase tracking-wider">
+                  <th class="py-3 px-space-md">Mã NV</th>
+                  <th class="py-3 px-space-md">Họ và tên</th>
+                  <th class="py-3 px-space-md">Phòng ban</th>
+                  <th class="py-3 px-space-md text-emerald-700">Đúng giờ</th>
+                  <th class="py-3 px-space-md text-amber-700">Đi muộn</th>
+                  <th class="py-3 px-space-md text-orange-700">Về sớm</th>
+                  <th class="py-3 px-space-md">Tổng ngày ghi nhận</th>
                 </tr>
               </thead>
-              <tbody id="summary-tbody">
-                <tr><td colspan="7" style="text-align: center; padding: 36px; color: var(--text-muted);">Đang tải bảng tổng hợp công...</td></tr>
+              <tbody class="divide-y divide-surface-container" id="summary-tbody">
+                <tr>
+                  <td colspan="7" class="py-10 text-center text-outline">
+                    Đang tải bảng tổng hợp công...
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
-        </div>
+        </section>
       </div>
     </main>
   </div>
 
-  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/components.js"></script>
   <script>
     if (requireAuth()) {
-      renderSidebar('attendance');
-      initIcons();
-      initAttendancePage();
-    }
-
-    function initIcons() {
-      if (window.icons) {
-        document.getElementById('icon-punch-in').innerHTML = window.icons.clock;
-        document.getElementById('icon-punch-out').innerHTML = window.icons.logout;
-        document.getElementById('icon-filter-clock').innerHTML = window.icons.calendar;
-        document.getElementById('icon-refresh').innerHTML = window.icons.filter;
-        document.getElementById('icon-summary-chart').innerHTML = window.icons.dashboard;
-      }
+      renderSidebar('attendance', 'Chấm công & Điểm danh');
+      initAttendance();
     }
 
     function updateLiveClock() {
       const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
+      const dateStr = now.toLocaleDateString('vi-VN', options);
       const timeStr = now.toLocaleTimeString('vi-VN', { hour12: false });
-      const dateStr = now.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      document.getElementById('live-clock').textContent = timeStr;
-      document.getElementById('live-date').textContent = dateStr;
+      const clockEl = document.getElementById('liveClock');
+      const dateEl = document.getElementById('terminal-date-str');
+      if (clockEl) clockEl.textContent = timeStr;
+      if (dateEl) dateEl.textContent = `${dateStr} (Ca hành chính 08:30 - 17:30)`;
     }
     setInterval(updateLiveClock, 1000);
     updateLiveClock();
 
-    async function initAttendancePage() {
+    async function initAttendance() {
       const now = new Date();
       document.getElementById('filter-month').value = now.getMonth() + 1;
       document.getElementById('filter-year').value = now.getFullYear();
 
       await Promise.all([
-        loadTodayStatus(),
+        loadToday(),
         loadHistory(),
         loadSummary()
       ]);
     }
 
-    async function loadTodayStatus() {
+    async function loadToday() {
       try {
         const res = await api.get('/attendance/today');
-        const text = document.getElementById('today-text');
+        const text = document.getElementById('today-status-text');
         const dot = document.getElementById('terminal-dot');
         const btnIn = document.getElementById('btn-checkin');
         const btnOut = document.getElementById('btn-checkout');
@@ -311,22 +297,20 @@
         if (res.data) {
           const item = res.data;
           let statusText = item.status === 'late' ? 'Đi muộn' : 'Đúng giờ';
-          let statusColor = item.status === 'late' ? 'var(--warning)' : 'var(--success)';
-
           if (item.check_out) {
             text.innerHTML = `Đã hoàn thành ca: Vào lúc <strong>${item.check_in}</strong> • Ra lúc <strong>${item.check_out}</strong> (${statusText})`;
-            dot.style.background = 'var(--primary)';
+            dot.className = 'w-2 h-2 rounded-full bg-primary';
             btnIn.disabled = true;
             btnOut.disabled = true;
           } else {
             text.innerHTML = `Đang trong ca làm việc: Đã Check-in lúc <strong>${item.check_in}</strong> (${statusText})`;
-            dot.style.background = statusColor;
+            dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
             btnIn.disabled = true;
             btnOut.disabled = false;
           }
         } else {
           text.textContent = 'Hôm nay bạn chưa thực hiện chấm công vào ca.';
-          dot.style.background = 'var(--text-light)';
+          dot.className = 'w-2 h-2 rounded-full bg-slate-400';
           btnIn.disabled = false;
           btnOut.disabled = true;
         }
@@ -337,16 +321,16 @@
       try {
         const res = await api.post('/attendance/check-in', {});
         showToast(res.message, 'success');
-        initAttendancePage();
-      } catch (err) {}
+        initAttendance();
+      } catch (e) {}
     });
 
     document.getElementById('btn-checkout').addEventListener('click', async () => {
       try {
         const res = await api.post('/attendance/check-out', {});
         showToast(res.message, 'success');
-        initAttendancePage();
-      } catch (err) {}
+        initAttendance();
+      } catch (e) {}
     });
 
     async function loadHistory() {
@@ -358,37 +342,37 @@
         const tbody = document.getElementById('history-tbody');
 
         if (!res.data || res.data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">Không có dữ liệu chấm công trong khoảng thời gian đã chọn.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="py-10 text-center text-outline">Không có dữ liệu chấm công trong khoảng thời gian đã chọn.</td></tr>';
           return;
         }
 
         tbody.innerHTML = res.data.map(item => {
-          let badge = '<span class="badge badge-success"><span class="status-dot" style="background:var(--success)"></span> Đúng giờ</span>';
-          if (item.status === 'late') badge = '<span class="badge badge-warning"><span class="status-dot" style="background:var(--warning)"></span> Đi muộn</span>';
-          if (item.status === 'early_leave') badge = '<span class="badge badge-warning"><span class="status-dot" style="background:var(--warning)"></span> Về sớm</span>';
-          if (item.status === 'absent') badge = '<span class="badge badge-danger"><span class="status-dot" style="background:var(--danger)"></span> Vắng mặt</span>';
+          let badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">Đúng giờ</span>';
+          if (item.status === 'late') badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700">Đi muộn</span>';
+          if (item.status === 'early_leave') badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-orange-700">Về sớm</span>';
+          if (item.status === 'absent') badge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-red-700">Vắng mặt</span>';
 
           const initials = item.full_name ? item.full_name.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase() : '--';
 
           return `
-            <tr>
-              <td><strong style="color: var(--text-main);">${formatDate(item.date)}</strong></td>
-              <td>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">
+            <tr class="hover:bg-surface-container-low transition-colors">
+              <td class="py-3 px-space-md font-semibold text-on-surface">${formatDate(item.date)}</td>
+              <td class="py-3 px-space-md">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
                     ${initials}
                   </div>
                   <div>
-                    <div style="font-weight: 600; color: var(--text-main);">${item.full_name}</div>
-                    <div style="font-size: 11px; color: var(--text-muted); font-family: monospace;">${item.employee_code}</div>
+                    <div class="font-semibold text-on-surface">${item.full_name}</div>
+                    <div class="text-[11px] text-outline font-mono">${item.employee_code}</div>
                   </div>
                 </div>
               </td>
-              <td>${item.department_name || '<span style="color: var(--text-light)">-</span>'}</td>
-              <td><span style="font-family: monospace; font-size: 13px; font-weight: 600;">${item.check_in || '-'}</span></td>
-              <td><span style="font-family: monospace; font-size: 13px; font-weight: 600;">${item.check_out || '-'}</span></td>
-              <td>${badge}</td>
-              <td style="color: var(--text-muted); font-size: 13px;">${item.note || '-'}</td>
+              <td class="py-3 px-space-md text-on-surface-variant">${item.department_name || '-'}</td>
+              <td class="py-3 px-space-md font-mono font-medium">${item.check_in || '-'}</td>
+              <td class="py-3 px-space-md font-mono font-medium">${item.check_out || '-'}</td>
+              <td class="py-3 px-space-md">${badge}</td>
+              <td class="py-3 px-space-md text-outline">${item.note || '-'}</td>
             </tr>
           `;
         }).join('');
@@ -400,9 +384,8 @@
       const year = document.getElementById('filter-year').value;
       const user = getCurrentUser();
 
-      // Only show if admin
       if (user && user.role !== 'admin') {
-        document.getElementById('summary-card').style.display = 'none';
+        document.getElementById('summary-section').style.display = 'none';
         return;
       }
 
@@ -411,22 +394,22 @@
         const tbody = document.getElementById('summary-tbody');
 
         if (!res.data || !res.data.items || res.data.items.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">Không có dữ liệu tổng hợp công.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="py-10 text-center text-outline">Không có dữ liệu tổng hợp công.</td></tr>';
           return;
         }
 
         tbody.innerHTML = res.data.items.map(item => `
-          <tr>
-            <td><span class="badge badge-neutral" style="font-family: monospace; font-weight: 700;">${item.employee_code}</span></td>
-            <td><strong style="color: var(--text-main); font-size: 14px;">${item.full_name}</strong></td>
-            <td>${item.department_name || '<span style="color: var(--text-light)">-</span>'}</td>
-            <td><span style="color: #059669; font-weight: 800; font-size: 14px;">${item.present_days}</span> <span style="font-size: 12px; color: var(--text-muted)">ngày</span></td>
-            <td><span style="color: #d97706; font-weight: 800; font-size: 14px;">${item.late_days}</span> <span style="font-size: 12px; color: var(--text-muted)">ngày</span></td>
-            <td><span style="color: #dc2626; font-weight: 800; font-size: 14px;">${item.early_leave_days}</span> <span style="font-size: 12px; color: var(--text-muted)">ngày</span></td>
-            <td><span class="badge badge-primary" style="font-weight: 700;">${item.total_recorded_days} ngày</span></td>
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-3 px-space-md font-mono font-bold text-primary">${item.employee_code}</td>
+            <td class="py-3 px-space-md font-semibold text-on-surface">${item.full_name}</td>
+            <td class="py-3 px-space-md text-on-surface-variant">${item.department_name || '-'}</td>
+            <td class="py-3 px-space-md font-bold text-emerald-600">${item.present_days} ngày</td>
+            <td class="py-3 px-space-md font-bold text-amber-600">${item.late_days} ngày</td>
+            <td class="py-3 px-space-md font-bold text-orange-600">${item.early_leave_days} ngày</td>
+            <td class="py-3 px-space-md"><span class="px-2.5 py-1 rounded bg-primary/10 text-primary font-bold">${item.total_recorded_days} ngày</span></td>
           </tr>
         `).join('');
-      } catch (err) {}
+      } catch (e) {}
     }
 
     document.getElementById('btn-filter-history').addEventListener('click', () => {

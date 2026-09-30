@@ -1,335 +1,286 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng nhập - HRM Enterprise</title>
-  <link rel="stylesheet" href="/assets/css/main.css">
-  <style>
-    body {
-      background: radial-gradient(circle at 10% 20%, #0b0f19 0%, #0f172a 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      color: #ffffff;
-      position: relative;
-      overflow-x: hidden;
-    }
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Đăng nhập - HRM Pro Enterprise</title>
+  
+  <!-- Fonts & Icons from Stitch -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-    /* Ambient background glows */
-    body::before {
-      content: '';
-      position: absolute;
-      top: -100px;
-      right: -100px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
-      filter: blur(60px);
-      pointer-events: none;
-    }
-
-    body::after {
-      content: '';
-      position: absolute;
-      bottom: -100px;
-      left: -100px;
-      width: 450px;
-      height: 450px;
-      background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
-      filter: blur(60px);
-      pointer-events: none;
-    }
-
-    .login-wrapper {
-      width: 100%;
-      max-width: 980px;
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      background: rgba(17, 23, 38, 0.85);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius-xl);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-      overflow: hidden;
-      z-index: 10;
-    }
-
-    /* Left Showcase Banner */
-    .showcase-pane {
-      padding: 48px;
-      background: linear-gradient(145deg, rgba(30, 27, 75, 0.6), rgba(15, 23, 42, 0.8));
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .brand-logo-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo-area .icon-box {
-      width: 42px;
-      height: 42px;
-      border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #4f46e5, #06b6d4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
-    }
-
-    .showcase-content h2 {
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1.25;
-      letter-spacing: -0.6px;
-      margin: 24px 0 14px;
-      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .showcase-content p {
-      font-size: 14px;
-      color: #94a3b8;
-      line-height: 1.6;
-    }
-
-    .feature-list {
-      margin-top: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .feature-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13.5px;
-      color: #cbd5e1;
-    }
-
-    .feature-item .check-circle {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .showcase-footer {
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 32px;
-    }
-
-    /* Right Auth Form */
-    .form-pane {
-      padding: 48px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background: #ffffff;
-      color: var(--text-primary);
-    }
-
-    .form-header {
-      margin-bottom: 28px;
-    }
-
-    .form-header h3 {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.4px;
-    }
-
-    .form-header p {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .quick-card {
-      margin-top: 22px;
-      padding: 14px;
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-      border-radius: var(--radius-md);
-      font-size: 12.5px;
-    }
-
-    .quick-card .title {
-      font-weight: 700;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .quick-btn {
-      width: 100%;
-      margin-top: 8px;
-      background: #eef2ff;
-      border: 1px solid #c7d2fe;
-      color: #4338ca;
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 7px 12px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: var(--transition-fast);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .quick-btn:hover {
-      background: #e0e7ff;
-      border-color: #a5b4fc;
-    }
-
-    @media (max-width: 768px) {
-      .login-wrapper {
-        grid-template-columns: 1fr;
+  <!-- Tailwind CSS with Stitch Theme Tokens -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-container": "#5c647a",
+            "tertiary-container": "#0062d2",
+            "background": "#f8f9ff",
+            "on-primary-fixed": "#001946",
+            "outline-variant": "#c3c6d6",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#bec6e0",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#0048af",
+            "on-surface-variant": "#424654",
+            "on-secondary-fixed": "#131b2e",
+            "surface-variant": "#d3e4fe",
+            "surface-container": "#e5eeff",
+            "secondary-container": "#dae2fd",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-secondary": "#ffffff",
+            "outline": "#737785",
+            "on-surface": "#0b1c30",
+            "on-primary-container": "#dee5ff",
+            "inverse-primary": "#b1c5ff",
+            "on-tertiary-container": "#dce5ff",
+            "on-background": "#0b1c30",
+            "tertiary": "#004ba4",
+            "surface-container-high": "#dce9ff",
+            "surface-container-highest": "#d3e4fe",
+            "primary-fixed-dim": "#b1c5ff",
+            "secondary-fixed": "#dae2fd",
+            "surface-dim": "#cbdbf5",
+            "on-tertiary-fixed": "#001a42",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "secondary": "#565e74",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#dae2ff",
+            "error-container": "#ffdad6",
+            "surface-tint": "#0957cc",
+            "inverse-surface": "#213145",
+            "on-primary": "#ffffff",
+            "on-primary-fixed-variant": "#00419e",
+            "on-tertiary-fixed-variant": "#004395",
+            "surface-bright": "#f8f9ff",
+            "primary-container": "#1e60d5",
+            "surface-container-low": "#eff4ff",
+            "tertiary-fixed": "#d8e2ff",
+            "inverse-on-surface": "#eaf1ff",
+            "tertiary-fixed-dim": "#adc6ff",
+            "surface": "#f8f9ff"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "margin-mobile": "1rem"
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"]
+          }
+        }
       }
-      .showcase-pane {
-        display: none;
-      }
-      .form-pane {
-        padding: 32px 24px;
-      }
-    }
-  </style>
+    };
+  </script>
 </head>
-<body>
-  <div class="login-wrapper">
-    <!-- Left Showcase -->
-    <div class="showcase-pane">
-      <div>
-        <div class="brand-logo-area">
-          <div class="icon-box" id="logo-icon-container"></div>
+<body class="bg-background font-sans text-on-surface antialiased min-h-screen flex items-center justify-center p-4">
+  <!-- Main Authenticated Grid Container -->
+  <div class="w-full max-w-5xl rounded-3xl bg-surface-container-lowest shadow-2xl border border-surface-container overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+    <!-- LEFT PANEL: Enterprise Brand Banner (5-column layout) -->
+    <div class="lg:col-span-5 bg-gradient-to-br from-primary via-primary-container to-tertiary text-on-primary p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
+      <!-- Decorative Geometry -->
+      <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-surface-container-lowest/10 blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-tertiary-fixed/15 blur-3xl pointer-events-none"></div>
+
+      <!-- Top Branding Pill -->
+      <div class="relative z-10">
+        <div class="inline-flex items-center gap-2 bg-on-primary/10 rounded-full px-3 py-1 mb-8 backdrop-blur-md">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs uppercase tracking-wider font-semibold text-on-primary">Enterprise Cloud HRM</span>
+        </div>
+        <h2 class="text-3xl font-extrabold text-on-primary leading-tight mb-4 tracking-tight">
+          Nền tảng quản trị nhân sự tương lai.
+        </h2>
+        <p class="text-sm text-on-primary-container leading-relaxed">
+          Tối ưu hóa bảng lương, chấm công thực thời và chuẩn hóa hồ sơ nhân sự theo chuẩn bảo mật ISO 27001.
+        </p>
+      </div>
+
+      <!-- Center Dynamic Metrics Showcase -->
+      <div class="relative z-10 my-8 flex flex-col gap-3">
+        <!-- Metric Feature Card 1 -->
+        <div class="flex items-center gap-4 bg-on-primary/10 rounded-xl p-3.5 backdrop-blur-md border border-white/10">
+          <div class="w-10 h-10 rounded-lg bg-surface-container-lowest/20 flex items-center justify-center text-on-primary flex-shrink-0">
+            <span class="material-symbols-outlined text-[22px]">fingerprint</span>
+          </div>
           <div>
-            <div style="font-weight: 800; font-size: 16px; color: #fff;">HRM Enterprise</div>
-            <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Workspace v2.0</div>
+            <div class="text-xs font-bold text-on-primary">Chấm công GPS &amp; AI FaceID</div>
+            <div class="text-[11px] text-on-primary-container">Đồng bộ tự động thời gian thực</div>
           </div>
         </div>
 
-        <div class="showcase-content">
-          <h2>Quản trị nhân sự & Chấm công chuẩn hóa</h2>
-          <p>Nền tảng tích hợp toàn diện quy trình quản lý hồ sơ, phòng ban và giám sát thời gian thực triển khai bằng Docker Compose.</p>
+        <!-- Metric Feature Card 2 -->
+        <div class="flex items-center gap-4 bg-on-primary/10 rounded-xl p-3.5 backdrop-blur-md border border-white/10">
+          <div class="w-10 h-10 rounded-lg bg-surface-container-lowest/20 flex items-center justify-center text-on-primary flex-shrink-0">
+            <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-on-primary">Tính lương tự động chuẩn xác</div>
+            <div class="text-[11px] text-on-primary-container">Khấu trừ thuế &amp; BHXH tức thời</div>
+          </div>
+        </div>
 
-          <div class="feature-list">
-            <div class="feature-item">
-              <div class="check-circle" id="check-icon-1"></div>
-              <span>Xác thực bảo mật JWT & Phân quyền đa cấp độ</span>
-            </div>
-            <div class="feature-item">
-              <div class="check-circle" id="check-icon-2"></div>
-              <span>Hạ tầng Nginx Reverse Proxy mã hóa SSL/TLS</span>
-            </div>
-            <div class="feature-item">
-              <div class="check-circle" id="check-icon-3"></div>
-              <span>Giám sát Prometheus, Grafana & LogQL tập trung</span>
-            </div>
+        <!-- Metric Feature Card 3 -->
+        <div class="flex items-center gap-4 bg-on-primary/10 rounded-xl p-3.5 backdrop-blur-md border border-white/10">
+          <div class="w-10 h-10 rounded-lg bg-surface-container-lowest/20 flex items-center justify-center text-on-primary flex-shrink-0">
+            <span class="material-symbols-outlined text-[22px]">security</span>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-on-primary">Mã hóa dữ liệu cấp ngân hàng</div>
+            <div class="text-[11px] text-on-primary-container">Bảo mật chuẩn SOC2 Type II</div>
           </div>
         </div>
       </div>
 
-      <div class="showcase-footer">
-        © 2026 HRM Enterprise System. Phát triển bởi Đỗ Quang Minh.
+      <!-- Bottom Trust Badge -->
+      <div class="relative z-10 pt-4 flex items-center justify-between border-t border-white/15">
+        <div class="flex flex-col">
+          <span class="text-base font-bold text-on-primary">2,400+</span>
+          <span class="text-[11px] text-on-primary-container">Doanh nghiệp tin dùng</span>
+        </div>
+        <div class="flex items-center gap-1 text-on-primary-container text-xs font-medium">
+          <span class="material-symbols-outlined text-[16px] text-emerald-400">verified</span>
+          <span>v4.8.2 LTS</span>
+        </div>
       </div>
     </div>
 
-    <!-- Right Form -->
-    <div class="form-pane">
-      <div class="form-header">
-        <h3>Chào mừng trở lại!</h3>
-        <p>Vui lòng đăng nhập để truy cập trang quản trị</p>
+    <!-- RIGHT PANEL: Authentication Form (7-column layout) -->
+    <div class="lg:col-span-7 p-8 lg:p-12 flex flex-col justify-between bg-surface-container-lowest">
+      <div>
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center font-bold text-lg shadow-sm">
+              <span class="material-symbols-outlined text-[24px]">corporate_fare</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-lg font-bold text-primary tracking-tight">HRM Pro</span>
+              <span class="text-[10px] uppercase font-semibold text-secondary tracking-wider">Enterprise Suite</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+            <span>Hệ thống sẵn sàng</span>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl font-bold text-on-surface tracking-tight">Đăng nhập tài khoản</h1>
+          <p class="text-xs text-on-surface-variant mt-1">Vui lòng nhập thông tin xác thực để truy cập hệ thống quản trị.</p>
+        </div>
+
+        <!-- 1-Click Admin Demo Button -->
+        <div class="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-primary text-[20px]">smart_toy</span>
+            <div>
+              <div class="text-xs font-bold text-primary">Tài khoản quản trị thử nghiệm</div>
+              <div class="text-[11px] text-outline font-mono">admin@hrm.local • Admin@123</div>
+            </div>
+          </div>
+          <button type="button" id="btn-autofill-admin" class="px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container shadow-sm transition-all whitespace-nowrap">
+            Điền nhanh
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="mt-6 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1">Email doanh nghiệp</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[20px]">mail</span>
+              <input type="email" id="email" class="w-full h-11 pl-10 pr-4 bg-surface-container-low rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary/25 font-mono" placeholder="tenban@congty.com" required/>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-semibold text-on-surface">Mật khẩu</label>
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[20px]">lock</span>
+              <input type="password" id="password" class="w-full h-11 pl-10 pr-4 bg-surface-container-low rounded-xl text-sm border-0 focus:ring-2 focus:ring-primary/25 font-mono" placeholder="••••••••" required/>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" id="btn-login-submit" class="w-full h-11 rounded-xl bg-primary text-on-primary font-bold text-sm shadow-md hover:bg-primary-container transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-[20px]">login</span>
+              <span id="btn-login-text">Đăng nhập hệ thống</span>
+            </button>
+          </div>
+        </form>
       </div>
 
-      <form id="login-form">
-        <div class="form-group">
-          <label class="form-label" for="email">Tài khoản Email</label>
-          <input type="email" id="email" class="form-control" placeholder="admin@hrm.local" required autocomplete="email">
+      <div class="pt-6 border-t border-surface-container mt-6 flex items-center justify-between text-[11px] text-outline">
+        <span>© 2026 HRM Pro Enterprise. Bảo lưu mọi quyền.</span>
+        <div class="flex items-center gap-1 text-emerald-700 font-semibold">
+          <span class="material-symbols-outlined text-[14px]">lock</span>
+          <span>Bảo mật TLS 1.3 End-to-End</span>
         </div>
-
-        <div class="form-group">
-          <label class="form-label" for="password">Mật khẩu truy cập</label>
-          <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="btn-submit" style="width: 100%; padding: 12px; margin-top: 10px; font-size: 14px;">
-          Đăng nhập vào hệ thống
-        </button>
-      </form>
-
-      <div class="quick-card">
-        <div class="title">
-          <span>⚡ Tài khoản thử nghiệm (Admin)</span>
-        </div>
-        <div style="color: var(--text-muted); margin-top: 4px; font-family: monospace;">
-          admin@hrm.local / Admin@123
-        </div>
-        <button type="button" class="quick-btn" id="btn-fill-admin">
-          Tự động điền tài khoản mẫu
-        </button>
       </div>
     </div>
   </div>
 
-  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script>
-    // Inject icons
-    document.getElementById('logo-icon-container').innerHTML = icons.zap;
-    document.getElementById('check-icon-1').innerHTML = icons.check;
-    document.getElementById('check-icon-2').innerHTML = icons.check;
-    document.getElementById('check-icon-3').innerHTML = icons.check;
+    // If already logged in, redirect to dashboard
+    if (getToken()) {
+      window.location.href = '/pages/dashboard.html';
+    }
 
-    // Quick fill
-    document.getElementById('btn-fill-admin').addEventListener('click', () => {
+    document.getElementById('btn-autofill-admin').addEventListener('click', () => {
       document.getElementById('email').value = 'admin@hrm.local';
       document.getElementById('password').value = 'Admin@123';
+      showToast('Đã điền thông tin tài khoản Admin thử nghiệm.', 'info');
     });
 
-    // Login submit
-    const loginForm = document.getElementById('login-form');
-    loginForm.addEventListener('submit', async (e) => {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-      const submitBtn = document.getElementById('btn-submit');
+      const btn = document.getElementById('btn-login-submit');
+      const btnText = document.getElementById('btn-login-text');
+
+      btn.disabled = true;
+      btnText.textContent = 'Đang xác thực...';
 
       try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Đang xác thực thông tin...';
-
         const res = await api.post('/auth/login', { email, password });
-        if (res.success) {
+        if (res.success && res.data) {
           setAuth(res.data.token, res.data.user);
           showToast('Đăng nhập thành công! Đang chuyển hướng...', 'success');
           setTimeout(() => {
             window.location.href = '/pages/dashboard.html';
-          }, 500);
+          }, 600);
+        } else {
+          showToast(res.message || 'Đăng nhập không thành công', 'error');
+          btn.disabled = false;
+          btnText.textContent = 'Đăng nhập hệ thống';
         }
       } catch (err) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Đăng nhập vào hệ thống';
+        showToast(err.message || 'Lỗi kết nối máy chủ.', 'error');
+        btn.disabled = false;
+        btnText.textContent = 'Đăng nhập hệ thống';
       }
     });
   </script>
