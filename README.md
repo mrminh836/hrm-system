@@ -1,19 +1,47 @@
-# ⚡ Hệ thống Quản lý Nhân sự (HRM System)
+# ⚡ Hệ thống Quản lý Nhân sự & Chấm công (HRM System)
 
-> **Hệ thống Quản lý Nhân sự (HRM)** đơn giản, hiệu quả và hiện đại, giúp doanh nghiệp quản lý thông tin nhân viên, cơ cấu tổ chức phòng ban và chấm công một cách chính xác, minh bạch — đóng gói triển khai toàn bộ bằng **Docker Compose** với hạ tầng giám sát và bảo mật hoàn chỉnh.
+> **Hệ thống Quản lý Nhân sự (HRM System)** đơn giản, hiệu quả và hiện đại, giúp doanh nghiệp quản lý thông tin nhân viên, cơ cấu tổ chức phòng ban và chấm công một cách chính xác, minh bạch — đóng gói triển khai toàn bộ bằng **Docker Compose** với hạ tầng Reverse Proxy HTTPS, hệ thống giám sát Prometheus + Grafana và quản lý log tập trung Loki + Promtail hoàn chỉnh.
 
 ---
 
 ## 📋 Mục lục
 1. [Giới thiệu & Tính năng chính](#-giới-thiệu--tính-năng-chính)
-2. [Ngăn xếp công nghệ (Tech Stack)](#-ngăn-xếp-công-nghệ-tech-stack)
-3. [Cấu trúc thư mục dự án](#-cấu-trúc-thư-mục-dự-án)
-4. [Tài khoản mặc định](#-tài-khoản-mặc-định)
-5. [Hướng dẫn cài đặt & Khởi chạy](#-hướng-dẫn-cài-đặt--khởi-chạy)
-   - [Cách 1: Triển khai với Docker Compose (Khuyên dùng)](#cách-1-triển-khai-với-docker-compose-khuyên-dùng)
-   - [Cách 2: Chạy trực tiếp (Local Development)](#cách-2-chạy-trực-tiếp-local-development)
-6. [Danh sách API Endpoints](#-danh-sách-api-endpoints)
-7. [Tiến độ Sprint & Kế hoạch phát triển](#-tiến-độ-sprint--kế-hoạch-phát-triển)
+2. [Cổng dịch vụ & URL Truy cập](#-cổng-dịch-vụ--url-truy-cập)
+3. [Tài khoản mặc định](#-tài-khoản-mặc-định)
+4. [Ngăn xếp công nghệ (Tech Stack)](#-ngăn-xếp-công-nghệ-tech-stack)
+5. [Cấu trúc thư mục dự án](#-cấu-trúc-thư-mục-dự-án)
+6. [Hướng dẫn cài đặt & Khởi chạy](#-hướng-dẫn-cài-đặt--khởi-chạy)
+7. [Hạ tầng Giám sát & Quản lý Log (Sprint 2)](#-hạ-tầng-giám-sát--quản-lý-log-sprint-2)
+8. [Các biện pháp Hardening Bảo mật](#-các-biện-pháp-hardening-bảo-mật)
+9. [Lịch sử Git Commits](#-lịch-sử-git-commits)
+10. [Tài liệu Báo cáo Dự án](#-tài-liệu-báo-cáo-dự-án)
+
+---
+
+## 🌐 Cổng dịch vụ & URL Truy cập
+
+| Dịch vụ | Địa chỉ truy cập | Giao thức | Ghi chú |
+| :--- | :--- | :---: | :--- |
+| **HRM Web App (Chính thức)** | **[https://localhost](https://localhost)** | HTTPS | Nginx Reverse Proxy (SSL tự ký, Security Headers) |
+| **HTTP Redirect** | `http://localhost` | HTTP | Tự động chuyển hướng (301) sang `https://localhost` |
+| **phpMyAdmin** | **[https://localhost/phpmyadmin/](https://localhost/phpmyadmin/)** | HTTPS | Quản trị GUI MySQL qua Nginx Proxy |
+| **Grafana Dashboard** | **[http://localhost:3000](http://localhost:3000)** | HTTP | Bảng điều khiển giám sát hệ thống (Provisioned) |
+| **Prometheus Web UI** | **[http://localhost:9090](http://localhost:9090)** | HTTP | Thu thập số liệu metrics thời gian thực |
+| **cAdvisor Metrics** | **[http://localhost:8081](http://localhost:8081)** | HTTP | Giám sát thông số phần cứng các container |
+| **Loki Log Engine** | **[http://localhost:3100](http://localhost:3100)** | HTTP | Quản lý log tập trung, truy vấn LogQL |
+| **Node.js Metrics Trực tiếp**| **[http://localhost:5000/metrics](http://localhost:5000/metrics)** | HTTP | Exporter của Express web service |
+| **MySQL Server** | Cổng host: `3307` (Container: `3306`) | TCP | Kết nối từ DBeaver / Workbench |
+
+---
+
+## 🔑 Tài khoản mặc định
+
+| Hệ thống | Tài khoản | Mật khẩu | Quyền hạn / Ghi chú |
+| :--- | :--- | :--- | :--- |
+| **HRM Web App** | `admin@hrm.local` | `Admin@123` | Quản trị viên cao nhất (Admin) |
+| **Grafana** | `admin` | `admin` | Quản trị giám sát Dashboard |
+| **phpMyAdmin** | `hrm_user` | `hrm_secure_password_2026` | Quản trị database `hrm_db` |
+| **MySQL Root** | `root` | `hrm_root_secure_2026` | Quản trị cấp cao máy chủ MySQL |
 
 ---
 
@@ -23,7 +51,7 @@
 - Thêm nhân viên mới với đầy đủ thông tin: Mã NV, họ tên, email, SĐT, ngày sinh, giới tính, địa chỉ, vị trí, phòng ban, mức lương.
 - Danh sách nhân viên phân trang, tìm kiếm tức thì theo tên/email/mã NV/SĐT, lọc theo phòng ban và trạng thái (Đang làm việc, Thử việc, Tạm nghỉ, Đã nghỉ việc).
 - Chỉnh sửa thông tin nhân viên, xóa hồ sơ với xác nhận an toàn.
-- Xem chi tiết hồ sơ cá nhân và lịch sử chấm công tương ứng.
+- Xem chi tiết hồ sơ cá nhân, đãi ngộ và thống kê / lịch sử chấm công chi tiết.
 
 ### 🏢 2. Quản lý phòng ban (Department Management)
 - CRUD phòng ban (Tên, mã phòng ban, trưởng phòng, mô tả chức năng).
@@ -32,7 +60,8 @@
 
 ### ⏱️ 3. Chấm công & Điểm danh (Attendance)
 - Check-in (Vào ca) & Check-out (Tan ca) hàng ngày theo thời gian thực.
-- Tự động nhận diện trạng thái Đúng giờ / Đi muộn dựa theo quy định ca làm việc.
+- Tự động nhận diện trạng thái Đúng giờ / Đi muộn dựa theo quy định ca làm việc (sau 08:30 là đi muộn).
+- Thống kê số ngày làm, đúng giờ, đi muộn, về sớm theo từng nhân viên.
 - Xem lịch sử chấm công cá nhân theo tháng/năm.
 - Bảng tổng hợp công nhân viên toàn công ty dành cho Quản lý.
 
@@ -46,14 +75,15 @@
 
 | Thành phần | Công nghệ sử dụng |
 | :--- | :--- |
-| **Backend** | Node.js (v20+ / v22), Express.js |
-| **Database** | MySQL 8.0 |
+| **Backend** | Node.js (v22-alpine), Express.js |
+| **Database** | MySQL 8.0 (InnoDB, utf8mb4) |
 | **DB GUI Tool** | phpMyAdmin |
 | **Frontend** | Vanilla HTML5, Modern CSS3 (Variables, Flexbox/Grid, Glassmorphism), Vanilla JavaScript ES6+ |
 | **Authentication** | JWT (jsonwebtoken), bcryptjs |
-| **Containerization**| Docker, Docker Compose |
-| **Monitoring Ready**| Prometheus Metrics (`/metrics`), cAdvisor, Grafana |
-| **Reverse Proxy** | Nginx (chuẩn bị cho Sprint 2 HTTPS) |
+| **Containerization**| Docker, Docker Compose (10 Containers) |
+| **Reverse Proxy** | Nginx Alpine (SSL/TLS tự ký, Security Headers) |
+| **Monitoring** | Prometheus v2.51, Grafana 10.4, MySQL Exporter, cAdvisor |
+| **Logging** | Grafana Loki 2.9, Promtail 2.9, LogQL |
 
 ---
 
@@ -66,70 +96,59 @@ Hệ thống Quản lý Nhân sự (HRM)/
 │       ├── config/
 │       │   └── db.js                  # Cấu hình Pool kết nối MySQL
 │       ├── controllers/
-│       │   ├── attendance.controller.js  # Controller chấm công
-│       │   ├── auth.controller.js        # Controller đăng nhập, đăng ký
-│       │   ├── department.controller.js  # Controller phòng ban
-│       │   ├── employee.controller.js    # Controller nhân viên
-│       │   └── stats.controller.js       # Controller thống kê tổng quan
+│       │   ├── attendance.controller.js  # Chấm công & thống kê ngày công
+│       │   ├── auth.controller.js        # Đăng ký, đăng nhập JWT
+│       │   ├── department.controller.js  # CRUD phòng ban
+│       │   ├── employee.controller.js    # CRUD nhân viên & tìm kiếm
+│       │   └── stats.controller.js       # Thống kê tổng quan Dashboard
 │       ├── db/
-│       │   ├── schema.sql             # Script khởi tạo bảng MySQL
-│       │   └── migrate.js             # Migration & seed tài khoản, dữ liệu mẫu
+│       │   ├── schema.sql             # Cấu trúc bảng MySQL
+│       │   ├── hardening.sql          # Thu hồi quyền & cấp quyền tối thiểu
+│       │   └── migrate.js             # Migration & Seed dữ liệu tự động
 │       ├── middleware/
-│       │   └── auth.js                # Middleware xác thực JWT & role Admin
-│       ├── routes/
-│       │   ├── attendance.routes.js
-│       │   ├── auth.routes.js
-│       │   ├── department.routes.js
-│       │   ├── employee.routes.js
-│       │   └── stats.routes.js
+│       │   └── auth.js                # Middleware JWT & role Admin
+│       ├── routes/                    # RESTful API routes
 │       └── server.js                  # Entry point Express app & metrics
 ├── frontend/
 │   ├── assets/
-│   │   ├── css/
-│   │   │   └── main.css               # Design System toàn diện cho HRM
+│   │   ├── css/main.css               # Design System toàn diện cho HRM
 │   │   └── js/
-│   │       ├── api.js                 # HTTP fetch wrapper, Toast alerts, Auth storage
-│   │       └── components.js          # Sidebar, Navbar & Logout components
-│   ├── pages/
-│   │   ├── attendance.html            # Trang chấm công & bảng công
-│   │   ├── dashboard.html             # Trang bảng điều khiển tổng quan
-│   │   ├── departments.html           # Trang quản lý phòng ban
-│   │   ├── employee-detail.html       # Trang hồ sơ chi tiết nhân viên
-│   │   ├── employees.html             # Trang danh sách & thêm/sửa nhân viên
-│   │   └── login.html                 # Trang đăng nhập hiện đại
-│   └── index.html                     # Trang điều hướng chính
+│   │       ├── api.js                 # API Client, Toast, Auth Token
+│   │       └── components.js          # Sidebar, Navbar & Logout
+│   ├── pages/                         # Các trang giao diện chức năng
+│   └── index.html                     # Điều hướng ứng dụng
+├── nginx/
+│   ├── conf.d/hrm.conf                # Cấu hình Reverse Proxy, HTTPS, Security Headers
+│   └── ssl/                           # Cặp khóa và chứng chỉ SSL x509
+├── monitoring/
+│   ├── prometheus/prometheus.yml      # Cấu hình Scrape 4 targets
+│   ├── grafana/
+│   │   ├── provisioning/              # Tự động nạp Datasource và Dashboard
+│   │   └── dashboards/                # Bảng điều khiển giám sát JSON
+│   ├── loki/loki-config.yml           # Cấu hình Loki Log Engine
+│   ├── promtail/promtail-config.yml   # Cấu hình Promtail Log Shipper
+│   └── mysql-exporter/.my.cnf         # Cấu hình trích xuất metrics MySQL
 ├── docs/
-│   ├── Product_Backlog_HRM_System.xlsx      # Product Backlog v1
-│   └── Product_Backlog_HRM_System_v2.xlsx   # Product Backlog v2 (MySQL + phpMyAdmin)
+│   ├── Product_Backlog_HRM_System_v2.xlsx   # Backlog Scrum 20 User Stories
+│   ├── logql_queries.md                     # Tài liệu hướng dẫn 4 câu truy vấn LogQL
+│   └── BAO_CAO_TONG_HOP_HRM_DEVOPS.md       # Báo cáo tổng hợp dự án ≥ 10 trang
+├── docker-compose.yml                 # Khởi chạy 10 containers với 3 mạng biệt lập
+├── Dockerfile                         # Image Node.js tối ưu với non-root user
 ├── .env.example                       # Biến môi trường mẫu
-├── .env                               # File cấu hình môi trường
-├── .gitignore                         # Danh sách file loại trừ khỏi Git
-├── docker-compose.yml                 # Khởi chạy toàn bộ hệ thống bằng 1 lệnh
-├── Dockerfile                         # Build image Node.js non-root bảo mật
-└── package.json                       # Định nghĩa dependencies và npm scripts
+└── package.json                       # Dependencies & scripts
 ```
-
----
-
-## 🔑 Tài khoản mặc định
-
-| Hệ thống | Đường dẫn | Tài khoản | Mật khẩu | Ghi chú |
-| :--- | :--- | :--- | :--- | :--- |
-| **HRM Web App** | `http://localhost:5000` | `admin@hrm.local` | `Admin@123` | Quyền Quản trị viên (Admin) |
-| **phpMyAdmin** | `http://localhost:8080` | `hrm_user` | `hrm_secure_password_2026` | Máy chủ: `hrm-mysql` |
-| **MySQL Root** | Port `3306` | `root` | `hrm_root_secure_2026` | Quản trị cấp cao DB |
 
 ---
 
 ## 🚀 Hướng dẫn cài đặt & Khởi chạy
 
-### Cách 1: Triển khai với Docker Compose (Khuyên dùng)
+### Khởi chạy toàn bộ hệ thống bằng Docker Compose
 
-Yêu cầu máy tính đã cài đặt **Docker** và **Docker Compose**.
+Yêu cầu máy tính đã cài đặt **Docker Desktop** (đang chạy).
 
-1. **Khởi chạy toàn bộ dịch vụ (Web app + MySQL + phpMyAdmin):**
+1. **Khởi chạy toàn bộ 10 container:**
    ```bash
-   docker compose up -d --build
+   docker compose up -d
    ```
 
 2. **Kiểm tra trạng thái các container:**
@@ -137,97 +156,74 @@ Yêu cầu máy tính đã cài đặt **Docker** và **Docker Compose**.
    docker compose ps
    ```
 
-3. **Truy cập ứng dụng:**
-   - Ứng dụng HRM: [http://localhost:5000](http://localhost:5000)
-   - Giao diện phpMyAdmin: [http://localhost:8080](http://localhost:8080)
-   - Prometheus Metrics: [http://localhost:5000/metrics](http://localhost:5000/metrics)
+3. **Mở trình duyệt truy cập:**
+   - Ứng dụng HRM (Bảo mật HTTPS): **[https://localhost](https://localhost)**
+   - Quản trị cơ sở dữ liệu: **[https://localhost/phpmyadmin/](https://localhost/phpmyadmin/)**
+   - Dashboard Giám sát Grafana: **[http://localhost:3000](http://localhost:3000)** (User: `admin` / Pass: `admin`)
+   - Bảng Prometheus: **[http://localhost:9090](http://localhost:9090)**
 
-4. **Dừng hệ thống:**
+4. **Dừng toàn bộ hệ thống:**
    ```bash
    docker compose down
    ```
 
 ---
 
-### Cách 2: Chạy trực tiếp (Local Development)
+## 📊 Hạ tầng Giám sát & Quản lý Log (Sprint 2)
 
-Yêu cầu máy tính đã cài **Node.js (>= 20)** và dịch vụ **MySQL 8.0** đang chạy.
+### 1. Prometheus & Grafana
+- **Auto-provisioning:** Grafana tự động kết nối nguồn dữ liệu Prometheus và hiển thị bảng điều khiển `HRM System - Production Overview` ngay sau khi chạy.
+- **Biểu đồ giám sát:**
+  - Tổng số lượng HTTP request và tần suất gọi API (req/s).
+  - Dung lượng RAM và tải CPU của tiến trình Node.js.
+  - Số lượng kết nối active, uptime và số lượng câu truy vấn (qps) của MySQL.
+  - Tải tài nguyên phần cứng của từng container qua cAdvisor.
 
-1. **Cài đặt thư viện dependencies:**
-   ```bash
-   npm install
+### 2. Loki, Promtail & 4 Câu truy vấn LogQL
+Truy cập **Grafana > Explore > Loki Data Source** và sử dụng các câu truy vấn sau:
+
+1. **Lọc log lỗi hệ thống (Error Logs):**
+   ```logql
+   {container="hrm-app"} |= "error" or {container="hrm-app"} |= "Error" or {container="hrm-app"} |= "500"
+   ```
+2. **Theo dõi log gọi API thời gian thực (Request Logs):**
+   ```logql
+   {container="hrm-app"} |~ "(GET|POST|PUT|DELETE) /api"
+   ```
+3. **Giám sát log cơ sở dữ liệu MySQL (DB Logs):**
+   ```logql
+   {container="hrm-mysql"} |= "ready for connections" or {container="hrm-mysql"} |= "[Warning]" or {container="hrm-mysql"} |= "[ERROR]"
+   ```
+4. **Kiểm toán đăng nhập bảo mật (Authentication Logs):**
+   ```logql
+   {container="hrm-app"} |= "/api/auth"
    ```
 
-2. **Cấu hình file môi trường `.env`:**
-   Chỉnh sửa các thông số kết nối MySQL (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) phù hợp với máy tính cá nhân.
-
-3. **Chạy Migration & Khởi tạo dữ liệu mẫu:**
-   ```bash
-   npm run db:migrate
-   ```
-
-4. **Khởi chạy máy chủ HRM:**
-   ```bash
-   npm start
-   # Hoặc chạy chế độ phát triển với Nodemon:
-   npm run dev
-   ```
+*Xem chi tiết hướng dẫn tại [docs/logql_queries.md](docs/logql_queries.md).*
 
 ---
 
-## 📡 Danh sách API Endpoints
+## 🛡️ Các biện pháp Hardening Bảo mật
 
-### 1. Xác thực & Người dùng (`/api/auth`)
-- `POST /api/auth/register`: Đăng ký tài khoản mới.
-- `POST /api/auth/login`: Đăng nhập & cấp phát JWT token.
-- `GET  /api/auth/me`: Lấy thông tin tài khoản đang đăng nhập.
-
-### 2. Quản lý phòng ban (`/api/departments`)
-- `GET    /api/departments`: Lấy danh sách kèm số lượng nhân viên từng phòng ban.
-- `GET    /api/departments/:id`: Lấy chi tiết phòng ban và danh sách nhân sự trực thuộc.
-- `POST   /api/departments`: Thêm phòng ban mới *(Yêu cầu quyền Admin)*.
-- `PUT    /api/departments/:id`: Cập nhật phòng ban *(Yêu cầu quyền Admin)*.
-- `DELETE /api/departments/:id`: Xóa phòng ban *(Kiểm tra ràng buộc nhân viên)*.
-
-### 3. Quản lý nhân sự (`/api/employees`)
-- `GET    /api/employees`: Tìm kiếm, phân trang, lọc theo phòng ban & trạng thái.
-- `GET    /api/employees/:id`: Lấy chi tiết hồ sơ nhân viên và lịch sử chấm công.
-- `POST   /api/employees`: Thêm nhân viên mới *(Yêu cầu quyền Admin)*.
-- `PUT    /api/employees/:id`: Cập nhật nhân viên *(Yêu cầu quyền Admin)*.
-- `DELETE /api/employees/:id`: Xóa nhân viên *(Yêu cầu quyền Admin)*.
-
-### 4. Chấm công (`/api/attendance`)
-- `POST /api/attendance/check-in`: Check-in vào ca làm việc hôm nay.
-- `POST /api/attendance/check-out`: Check-out tan ca hôm nay.
-- `GET  /api/attendance/today`: Kiểm tra trạng thái chấm công cá nhân hôm nay.
-- `GET  /api/attendance/history`: Xem lịch sử chấm công cá nhân/tất cả theo tháng & năm.
-- `GET  /api/attendance/summary`: Báo cáo tổng hợp số ngày công theo tháng *(Admin)*.
-
-### 5. Thống kê & Giám sát (`/api/stats` & `/metrics`)
-- `GET /api/stats`: Thống kê tổng số nhân sự, phòng ban, điểm danh hôm nay.
-- `GET /metrics`: Prometheus exporter metrics phục vụ giám sát hệ thống.
-- `GET /api/health`: Healthcheck endpoint kiểm tra tính sẵn sàng của web service.
+1. **Chạy container với Non-Root User:** Dockerfile sử dụng chỉ thị `USER node`, không chạy dưới quyền root.
+2. **Phân tách mạng (Network Isolation):** Tách bạch 3 mạng `hrm-frontend-net`, `hrm-backend-net`, `hrm-monitoring-net`.
+3. **Đặc quyền cơ sở dữ liệu tối thiểu:** Áp dụng [hardening.sql](backend/src/db/hardening.sql), chỉ cấp `SELECT, INSERT, UPDATE, DELETE` cho user ứng dụng `hrm_user`.
+4. **Bộ tiêu đề Security Headers:** Nginx triển khai `Strict-Transport-Security` (HSTS), `X-Frame-Options` (Clickjacking), `X-Content-Type-Options` (MIME Sniffing), `X-XSS-Protection`, `Referrer-Policy`, `Content-Security-Policy`.
 
 ---
 
-## 📈 Tiến độ Sprint & Kế hoạch phát triển
+## 📌 Lịch sử Git Commits
 
-- [x] **Sprint 1: Xây dựng nền tảng cốt lõi & Quản lý nhân sự**
-  - [x] Khởi tạo Git repository, cấu trúc thư mục, `package.json`, `.gitignore`, `README.md`.
-  - [x] Cấu hình kết nối MySQL và script Migration & Auto-seed dữ liệu mẫu.
-  - [x] Hoàn thiện API và Giao diện Đăng nhập, phân quyền JWT.
-  - [x] Hoàn thiện API và Giao diện Quản lý phòng ban (CRUD).
-  - [x] Hoàn thiện API và Giao diện Quản lý nhân viên (CRUD, Tìm kiếm, Phân trang, Xem chi tiết).
-  - [x] Đóng gói Docker Compose cơ bản (Web app + MySQL + phpMyAdmin).
-  - [x] **GitHub Commit 1** hoàn tất.
+Toàn bộ tiến độ phát triển được lưu lại với 3 mốc commit chính:
+- **Commit 1 (`346da77`):** `feat(sprint-1): khoi tao du an HRM, backend Express MySQL, frontend HTML/CSS/JS, docker-compose va README`
+- **Commit 2 (`eaadc89`):** `feat(sprint-2): cau hinh Nginx reverse proxy, HTTPS tu ky, security headers va thong ke cham cong`
+- **Commit 3 (`55402c5`):** `feat(sprint-2): cau hinh Prometheus, Grafana dashboard, Loki, Promtail, MySQL exporter va LogQL queries`
 
-- [ ] **Sprint 2: Chấm công & Hạ tầng DevOps nâng cao**
-  - [x] Nghiệp vụ Chấm công (Check-in/out, Lịch sử, Bảng tổng hợp tháng - đã xây dựng nền tảng).
-  - [ ] Nginx Reverse Proxy (HTTPS tự ký, Security headers) - **Commit 2**.
-  - [ ] Giám sát Prometheus + Grafana dashboard + cAdvisor.
-  - [ ] Quản lý Log tập trung Loki + Promtail + LogQL queries - **Commit 3**.
-  - [ ] Hardening hệ thống (Non-root user, Network isolation, Phân quyền DB).
-  - [ ] Hoàn thiện báo cáo tổng hợp (≥ 10 trang).
+---
+
+## 📄 Tài liệu Báo cáo Dự án
+Xem toàn bộ báo cáo phân tích kiến trúc, thiết kế cơ sở dữ liệu, quy trình DevOps và đánh giá nghiệm thu chi tiết (≥ 10 trang) tại:
+👉 **[Báo cáo tổng hợp dự án HRM DevOps (docs/BAO_CAO_TONG_HOP_HRM_DEVOPS.md)](docs/BAO_CAO_TONG_HOP_HRM_DEVOPS.md)**
 
 ---
 
